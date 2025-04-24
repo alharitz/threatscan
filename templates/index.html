@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body class="bg-slate-900 max-w-[1920px] mx-auto">
+    <header class="my-8 mx-10 flex flex-row justify-between">
+        <div class="flex flex-row gap-0">
+            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
+            <h1 class="text-2xl text-violet-500">scan</h1>    
+        </div>
+        <form action="{{ url_for('scan') }}" class="text-center">
+            <button type="submit" class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition duration-300 text-stone-100 font-semibold">
+                Scan Now
+            </button>
+        </form>
+    </header>
+    <main class="mx-10 mt-10">
+        <div class="flex flex-row justify-between">
+            <h1 class="text-xl text-fuchsia-400">Security score</h1>
+            <h1 class="text-xl text-slate-500">last scan : </h1>
+        </div>
+        <div class="flex flex-row mt-5 justify-center">
+            <div id="filter-all" class="bg-slate-700 py-7 px-24 flex flex-col items-center rounded-l-2xl cursor-pointer hover:opacity-90 active:filter-active" onclick="filterVulnerabilities('all')">
+                <h1 class="text-white text-xl">Overall</h1>
+                <h1 class="text-white text-xl">0</h1>
+            </div>
+            <div id="filter-low" class="bg-yellow-500 py-7 px-24 flex flex-col items-center cursor-pointer hover:opacity-90" onclick="filterVulnerabilities('low')">
+                <h1 class="text-white text-xl">Low</h1>
+                <h1 class="text-white text-xl">0</h1>
+            </div>
+            <div id="filter-medium" class="bg-orange-500 py-7 px-24 flex flex-col items-center cursor-pointer hover:opacity-90" onclick="filterVulnerabilities('medium')">
+                <h1 class="text-white text-xl">Medium</h1>
+                <h1 class="text-white text-xl">0</h1>
+            </div>
+            <div id="filter-high" class="bg-red-500 py-7 px-24 flex flex-col items-center cursor-pointer hover:opacity-90" onclick="filterVulnerabilities('high')">
+                <h1 class="text-white text-xl">High</h1>
+                <h1 class="text-white text-xl">0</h1>
+            </div>
+            <div id="filter-critical" class="bg-purple-500 py-7 px-24 flex flex-col items-center rounded-r-2xl cursor-pointer hover:opacity-90" onclick="filterVulnerabilities('critical')">
+                <h1 class="text-white text-xl">Critical</h1>
+                <h1 class="text-white text-xl">0</h1>
+            </div>
+        </div>
+        
+        <!-- Vulnerabilities Table -->
+        <div class="mt-12">
+            <h1 class="text-xl text-fuchsia-400 mb-4">Vulnerabilities</h1>
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-slate-800 rounded-lg overflow-hidden">
+                    <thead>
+                        <tr class="bg-slate-700 text-left">
+                            <th class="py-3 px-4 text-stone-100">VULN ID</th>
+                            <th class="py-3 px-4 text-stone-100">VULN NAME</th>
+                            <th class="py-3 px-4 text-stone-100">AFFECTED SOFTWARE</th>
+                            <th class="py-3 px-4 text-stone-100">SEVERITY</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 px-4 text-stone-300">
+                                <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-1234" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">CVE-2023-1234</a>
+                            </td>
+                            <td class="py-3 px-4 text-stone-300">SQL Injection</td>
+                            <td class="py-3 px-4 text-stone-300">Database v2.1</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-red-500 text-white rounded-md">High</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 px-4 text-stone-300">
+                                <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-5678" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">CVE-2023-5678</a>
+                            </td>
+                            <td class="py-3 px-4 text-stone-300">Cross-Site Scripting (XSS)</td>
+                            <td class="py-3 px-4 text-stone-300">WebApp v1.3</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-orange-500 text-white rounded-md">Medium</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 px-4 text-stone-300">
+                                <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-9012" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">CVE-2023-9012</a>
+                            </td>
+                            <td class="py-3 px-4 text-stone-300">Remote Code Execution</td>
+                            <td class="py-3 px-4 text-stone-300">API Server v3.0</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-purple-500 text-white rounded-md">Critical</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-700">
+                            <td class="py-3 px-4 text-stone-300">
+                                <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-3456" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">CVE-2023-3456</a>
+                            </td>
+                            <td class="py-3 px-4 text-stone-300">Information Disclosure</td>
+                            <td class="py-3 px-4 text-stone-300">Auth Service v1.5</td>
+                            <td class="py-3 px-4"><span class="px-2 py-1 bg-yellow-500 text-white rounded-md">Low</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <script>
+        // Set "all" as active by default when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            highlightActiveFilter('all');
+            updateVulnerabilityCounts();
+        });
+        
+        function updateVulnerabilityCounts() {
+            // Count all vulnerabilities
+            const total = document.querySelectorAll('tbody tr').length;
+            document.querySelector('#filter-all h1:nth-child(2)').textContent = total;
+            
+            // Count by severity
+            ['low', 'medium', 'high', 'critical'].forEach(severity => {
+                const count = document.querySelectorAll(`tbody tr td span.bg-${getSeverityColorClass(severity)}`).length;
+                document.querySelector(`#filter-${severity} h1:nth-child(2)`).textContent = count;
+            });
+        }
+        
+        function getSeverityColorClass(severity) {
+            switch(severity) {
+                case 'low': return 'yellow-500';
+                case 'medium': return 'orange-500';
+                case 'high': return 'red-500';
+                case 'critical': return 'purple-500';
+                default: return '';
+            }
+        }
+        
+        function filterVulnerabilities(severity) {
+            // Highlight the active filter
+            highlightActiveFilter(severity);
+            
+            // Get all table rows
+            const rows = document.querySelectorAll('tbody tr');
+            
+            // If "all" is selected, show everything
+            if (severity === 'all') {
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+                return;
+            }
+            
+            // Otherwise filter by the selected severity
+            rows.forEach(row => {
+                // Look for spans with the color class matching the severity
+                const colorClass = getSeverityColorClass(severity);
+                const severitySpan = row.querySelector(`td span.bg-${colorClass}`);
+                
+                if (severitySpan) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function highlightActiveFilter(activeId) {
+            // Remove active class from all filters
+            const filters = document.querySelectorAll('[id^="filter-"]');
+            filters.forEach(filter => {
+                filter.classList.remove('opacity-100');
+                filter.classList.add('opacity-70');
+            });
+            
+            // Add active class to the selected filter
+            const activeFilter = document.getElementById('filter-' + activeId);
+            activeFilter.classList.remove('opacity-70');
+            activeFilter.classList.add('opacity-100');
+        }
+    </script>
+</body>
+</html>

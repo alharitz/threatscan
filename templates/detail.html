@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Vulnerability Detail</title>
+</head>
+<body class="bg-slate-900 max-w-[1920px] mx-auto">
+    <header class="my-8 mx-10 flex flex-row justify-between">
+        <div class="flex flex-row gap-0">
+            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
+            <h1 class="text-2xl text-violet-500">scan</h1>    
+        </div>
+        <button class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition duration-300">
+            <a class="text-stone-100 font-semibold" href="/export-pdf">Export as PDF</a>
+        </button>
+    </header>
+    <main class="mx-10 mt-10">
+        <!-- Vulnerability Header -->
+        <div class="flex flex-row justify-between items-center border-b border-slate-700 pb-4">
+            <div>
+                <h1 class="text-2xl text-fuchsia-400">CVE-2023-1234</h1>
+                <h2 class="text-xl text-white mt-2">SQL Injection</h2>
+            </div>
+            <span class="px-3 py-1 bg-red-500 text-white text-lg rounded-md">High</span>
+        </div>
+        
+        <!-- Description Section -->
+        <div class="mt-8">
+            <h2 class="text-xl text-fuchsia-400 mb-4">Description</h2>
+            <div class="bg-slate-800 rounded-lg p-5">
+                <p class="text-stone-300">
+                    A SQL injection vulnerability was discovered in Database v2.1 that allows attackers to execute arbitrary SQL commands
+                    via the search parameter. This vulnerability occurs due to insufficient input validation and could lead to unauthorized 
+                    access to sensitive data or allow attackers to manipulate database contents.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Impact Section -->
+        <div class="mt-8">
+            <h2 class="text-xl text-fuchsia-400 mb-4">Impact</h2>
+            <div class="bg-slate-800 rounded-lg p-5">
+                <p class="text-stone-300">
+                    Successful exploitation could allow an attacker to:
+                </p>
+                <ul class="list-disc pl-5 mt-2 text-stone-300">
+                    <li class="mt-1">Access unauthorized data including user credentials and sensitive information</li>
+                    <li class="mt-1">Modify database entries</li>
+                    <li class="mt-1">Execute administrative operations on the database</li>
+                    <li class="mt-1">Potentially perform server-side code execution</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Mitigation Section -->
+        <div class="mt-8">
+            <h2 class="text-xl text-fuchsia-400 mb-4">Mitigation</h2>
+            <div class="bg-slate-800 rounded-lg p-5">
+                <p class="text-stone-300">
+                    To mitigate this vulnerability:
+                </p>
+                <ul class="list-disc pl-5 mt-2 text-stone-300">
+                    <li class="mt-1">Update to Database v2.1.5 or later which contains security patches</li>
+                    <li class="mt-1">Implement prepared statements and parameterized queries</li>
+                    <li class="mt-1">Apply input validation and sanitization on all user inputs</li>
+                    <li class="mt-1">Use the principle of least privilege for database accounts</li>
+                    <li class="mt-1">Consider implementing a web application firewall (WAF)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- References Section -->
+        <div class="mt-8 mb-12">
+            <h2 class="text-xl text-fuchsia-400 mb-4">References</h2>
+            <div class="bg-slate-800 rounded-lg p-5">
+                <ul class="list-disc pl-5 text-stone-300">
+                    <li class="mt-1">
+                        <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-1234" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">
+                            NIST National Vulnerability Database: CVE-2023-1234
+                        </a>
+                    </li>
+                    <li class="mt-1">
+                        <a href="https://example.com/security/advisory-123" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">
+                            Vendor Security Advisory: SA-123
+                        </a>
+                    </li>
+                    <li class="mt-1">
+                        <a href="https://example.com/blog/sql-injection-analysis" target="_blank" class="underline text-stone-300 hover:text-fuchsia-400">
+                            Security Researcher Analysis
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Scan Results - ThreatScan</title>
+</head>
+<body class="bg-slate-900 max-w-[1920px] mx-auto">
+    <header class="my-8 mx-10 flex flex-row justify-between">
+        <div class="flex flex-row gap-0">
+            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
+            <h1 class="text-2xl text-violet-500">scan</h1>    
+        </div>
+        <a href="/" class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition duration-300 text-stone-100 font-semibold">
+            Back to Home
+        </a>
+    </header>
+
+    <main class="mx-10 mt-10">
+        <h2 class="text-xl text-fuchsia-400 mb-4">Scan Results</h2>
+        
+        <!-- Scan date/time -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Scan date/time</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.date_time }}</pre>
+        </div>
+
+        <!-- OS Info -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">OS Information</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.os }}</pre>
+        </div>
+
+        <!-- Installed Apps -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Installed Applications</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.installed_apps }}</pre>
+        </div>
+
+        <!-- Installed Python2 Packages -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Installed Python2 Packages</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.python2_packages }}</pre>
+        </div>
+
+        <!-- Installed Python3 Packages -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Installed Python3 Packages</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.python3_packages }}</pre>
+        </div>
+
+        <!-- Installed npm Packages -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Installed npm Packages</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.npm_packages }}</pre>
+        </div>
+
+        <!-- Running Services -->
+        <div class="mt-6">
+            <h3 class="text-lg text-violet-400 mb-2">Running Services</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.services }}</pre>
+        </div>
+
+        <!-- Open Ports -->
+        <div class="mt-6 mb-10">
+            <h3 class="text-lg text-violet-400 mb-2">Open Ports</h3>
+            <pre class="bg-slate-800 text-stone-300 p-4 rounded overflow-x-auto text-sm">{{ results.open_ports }}</pre>
+        </div>
+    </main>
+</body>
+</html>
