@@ -1,0 +1,240 @@
+{
+  "node 16.14.2": [
+    {
+      "cve_id": "CVE-2021-43803",
+      "risk_level": "High Risk",
+      "simple_steps": " * If you're using Next.js, make sure your version is either 12.0.5 or 11.1.3 to avoid a server crash issue.\n* This problem only affects deployments that use Next.js between versions 11.1.0 and 12.0.5, and have Node.js above version 15.0.0.\n* This issue occurs when using Next.js with \"next start\" or a custom server.\n* If your setup matches the above criteria, update your Next.js and Node.js to the recommended versions.\n* Deployments on Vercel or similar environments that filter invalid requests before reaching Next.js are not affected.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2022-32212",
+      "risk_level": "High Risk",
+      "simple_steps": " * Node.js versions before 14.20.0, 16.20.0, and 18.5.0 have a security issue.\n* This problem is caused by a weak check called \"IsAllowedHost\" which can be bypassed.\n* The \"IsIPAddress\" function doesn't ensure that given IP addresses are invalid before making database requests.\n* An attacker can exploit this vulnerability to execute Operating System (OS) commands.\n* OS Command Injection can lead to serious security issues, like stealing sensitive data or taking control of your system.\n\nTo protect yourself:\n\n* Update Node.js: Ensure you're using the latest version of Node.js (preferably 14.20.0 or later, 16.20.0 or later, or 18.5.0 or later) by visiting the official Node.js website or using your package manager.\n* Use a Package Manager: Install updates through your preferred package manager (like npm or yarn) to automatically get the latest security patches.\n* Limit Access: Only allow trusted sources to connect and send commands to your Node.",
+      "original_score": 8.1
+    },
+    {
+      "cve_id": "CVE-2022-32213",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Node.js is a popular programming platform for building applications.\n* One part of Node.js, called the \"http module,\" handles HTTP (Hypertext Transfer Protocol) requests and responses.\n* There are specific versions of this http module (v14.20.1, v16.17.1, and v18.9.1) with a security issue.\n* This issue affects how the module processes certain \"Transfer-Encoding\" headers in HTTP requests.\n* These headers tell the server how to send data in response to a request, but in the problematic versions, the module doesn't check them properly.\n* This can lead to a phenomenon called HTTP Request Smuggling (HRS).\n\nTo protect yourself against this issue:\n\n* Update Node.js and the http module to a version that doesn't have this vulnerability.\n* Check your Node.js applications and dependencies for these versions.\n* Install a security middleware or a Web Application Firewall (WAF) that can protect against HTTP Request Smuggling.\n\nSteps to update:\n\n1. Check the current Node.js version: `node --version`\n2. If",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2022-32214",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Node.js's http module with certain versions of the llhttp parser (v14.20.1, v16.17.1, and v18.9.1) may not follow the proper rules for separating HTTP requests with CRLF sequences.\n* This issue can result in a security vulnerability called HTTP Request Smuggling (HRS).\n* HRS can allow an attacker to insert malicious data into your server's HTTP requests, potentially leading to unintended actions or access to sensitive information.\n* To protect yourself against this issue:\n  1. Update your Node.js instance to the latest stable version.\n  2. If updating is not an option, consider using a more secure alternative parser, such as `http-parser`.\n  3. Implement Content Security Policy (CSP) headers in your web applications to restrict the types of requests that can be sent to your server.\n  4. Regularly monitor your server logs for any signs of suspicious HTTP requests.\n  5. Keep your Node.js application and all its dependencies up-to-date to minimize security vulnerabilities.",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2022-32215",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Node.js is a popular programming platform used to run JavaScript code.\n* The issue is with a specific part of Node.js called the \"http module\" and a component within it called the \"llhttp parser\".\n* Versions 14.20.1, 16.17.1, and 18.9.1 of this parser have a problem.\n* The problem is that it doesn't understand multi-line \"Transfer-Encoding\" headers in HTTP requests correctly.\n* An HTTP request is a message sent from a web browser or app to a server. \"Transfer-Encoding\" headers tell the server how to send the response back.\n* This problem can lead to a security issue called \"HTTP Request Smuggling\" (HRS).\n* HRS can be exploited to trick the server into processing two or more requests at once, confusing it and potentially causing errors or security vulnerabilities.\n* To protect yourself:\n  1. Check which version of Node.js and the http module you're using.\n  2. If you're using one of the affected versions (14.20.1, 16.17.1, or",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2022-32223",
+      "risk_level": "High Risk",
+      "simple_steps": " * Node.js may have a vulnerability called Hijack Execution Flow on Windows systems, which can lead to DLL Hijacking.\n* This issue can affect you if you have OpenSSL installed on your Windows computer and the file \"C:\\Program Files\\Common Files\\SSL\\openssl.cnf\" exists.\n* When running Node.js, the program looks for a file called `providers.dll` in your current user directory first.\n* If it doesn't find it there, Node.js will search for `providers.dll` using the DLL Search Order on your Windows system.\n* Malicious actors can take advantage of this by placing a harmful `providers.dll` file in a path that Node.js will search.\n\nSimple, actionable steps for non-technical users:\n\n* Keep your Windows system and all installed applications updated with the latest security patches.\n* If you have OpenSSL installed, be cautious when installing additional software that might also require it. Ensure that you're downloading software from trusted sources.\n* Avoid placing `providers.dll` or any other critical files in publicly accessible directories or paths.\n*",
+      "original_score": 7.3
+    },
+    {
+      "cve_id": "CVE-2022-35255",
+      "risk_level": "Critical Risk",
+      "simple_steps": " * A weakness in the WebCrypto key generation process in Node.js 18 may put your data at risk. Here's what you can do to protect yourself:\n* EntropySource(), a part of the key generation process, may sometimes fail. To ensure it doesn't, try the following steps:\n    1. Import a suitable EntropySource module or use a proven one, such as crypto-random-straight from npm.\n    2. Check the return value of EntropySource() to make sure it's successful before using it for key generation.\n* The random data generated by EntropySource() may not be strong enough for cryptographic purposes. Here's how to improve it:\n    1. Use a high-quality random number generator, like the one mentioned above, to ensure strong randomness.\n    2. Consider incorporating additional sources of entropy, such as mouse movements or keyboard input, to enhance the randomness.\n* Regularly update your Node.js installation to ensure you have the latest security patches. This will help protect you against known vulnerabilities, such as the one mentioned above.\n* As an extra precaution, consider using a Password-Based Key Der",
+      "original_score": 9.1
+    },
+    {
+      "cve_id": "CVE-2022-35256",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Node.js version 18.7.0 has a vulnerability in its http module's llhttp parser.\n* This issue causes problems when header fields in HTTP requests are not properly ended with a line break character (CR LF).\n* The result is a condition called HTTP Request Smuggling.\n\nTo protect yourself from this vulnerability as a non-technical user, follow these steps:\n\n1. Update Node.js: Ensure your Node.js installation is up-to-date. Go to the official Node.js website (https://nodejs.org/) and download the latest version. Run the installer and follow the instructions to update.\n\n2. Monitor dependencies: Regularly check your project's dependencies for updates. This can often be done through your package manager, such as npm or yarn, by running a command like `npm outdated` or `yarn outdated`. If you find an updated version of the 'http' module, install it.\n\n3. Use a proxy server: Implementing an HTTP proxy server can help protect against Request Smuggling attacks, as it acts as a middleman between your application and the internet. Many popular proxies",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2022-43548",
+      "risk_level": "High Risk",
+      "simple_steps": " * Node.js versions before 14.21.1, 16.18.1, 18.12.1, and 19.0.1 have a security issue.\n* This problem is called CVE-2022-32212.\n* The issue is an OS Command Injection vulnerability.\n* It happens because the security check called \"IsAllowedHost\" is not strong enough and can be bypassed.\n* Another check called \"IsIPAddress\" is not working correctly, causing it to make risky database requests that allow attackers to rebind the connection.\n* The initial fix for this problem was not complete.\n* To protect yourself:\n  + Update Node.js to the latest version (preferably 14.21.1 or later).\n  + Install a reputable security software to monitor and block unauthorized commands.\n  + Use a firewall to restrict access to your Node.js application only to trusted sources.\n  + Regularly check for and apply security updates for all software on your system.",
+      "original_score": 8.1
+    },
+    {
+      "cve_id": "CVE-2023-23936",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Undici is a tool used to send and receive data over the internet using a specific version of Node.js.\n* Between version 2.0.0 and 5.18.0, Undici did not have a protection against a specific type of security issue called CRLF injection in the `host` HTTP header.\n* This vulnerability means that someone could potentially interfere with the communication between your computer and the server you are trying to reach.\n* Starting from version 5.19.1, Undici has a fix for this issue.\n* However, if you are using an older version, you can take the following steps as a temporary solution:\n* Sanitize the `headers.host` string before passing it to Undici. This means checking and modifying the string to make sure it only contains the necessary information and no harmful characters.\n* To sanitize the string, you can use a library like `helmet` in Express.js or `content-security-policy-parser` in Node.js.\n* Alternatively, you can manually check and modify the `headers.host` string using string manipulation functions in Node.js before passing it to Undici.\n*",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2023-23918",
+      "risk_level": "High Risk",
+      "simple_steps": " * If you're using Node.js version below 19.6.1, 18.14.1, 16.19.1, or 14.21.3, update your Node.js installation to the latest version as soon as possible.\n* These versions have a security issue where unauthorized access to certain modules can occur.\n* This issue only affects users who have enabled experimental permissions with the --experimental-policy flag.\n* To check your current Node.js version and update it, follow these steps:\n    1. Open your terminal or command prompt.\n    2. Type `node --version` to check your current Node.js version.\n    3. If you need to update, go to the Node.js website (<https://nodejs.org/en/download/>) and download the appropriate installer for your operating system.\n    4. Run the installer and follow the instructions to complete the installation.\n* Disable experimental permissions if you're not sure you've used them. To check and disable experimental permissions:\n    1. Open your terminal or command prompt.\n    2. Type `node --inspect-br",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-23919",
+      "risk_level": "High Risk",
+      "simple_steps": " * Node.js versions 19.2.0, 18.14.1, 16.19.1, and 14.21.3 have a security issue.\n* This problem involves OpenSSL error messages.\n* Sometimes, these error messages are not properly cleared after certain operations.\n* This can cause confusion with later cryptographic processes on the same thread.\n* False positive errors may occur, making it seem like there's a problem when there isn't.\n* An attacker could potentially use this to overload the system with false errors, leading to a Denial of Service (DoS).\n\nSimple, actionable steps for a non-technical user:\n\n* Update Node.js: Make sure you have the latest version installed to avoid this vulnerability. Check your current version and download the latest one from the official Node.js website.\n* Install automatic updates: Set your Node.js installation to update automatically so you always have the latest security patches.\n* Use a package manager: Use a package manager like npm or Yarn to manage your Node.js installations and updates. They can help ensure you're always using the latest,",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-23920",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Node.js is a type of software that allows you to run JavaScript codes outside of a web browser.\n* There's a security issue in certain older versions of Node.js: 19.6.1, 18.14.1, 16.19.1, and 14.21.3.\n* An attacker can exploit this issue to search for and load International Components for Unicode (ICU) data when Node.js is being run with elevated privileges.\n* Elevated privileges mean the software is running with more power than usual. This can include things like installing software, changing settings, or accessing sensitive data.\n* ICU data contains translations and information about different languages and regions.\n\nTo protect yourself:\n\n* Make sure Node.js is updated to the latest version. Go to the Node.js website, download the latest version, and follow the installation instructions.\n* Don't run Node.js with elevated privileges unless absolutely necessary. If you need to install software or make changes to settings, consider using an administrator account only when needed and closing it when done.\n* Be cautious",
+      "original_score": 4.2
+    },
+    {
+      "cve_id": "CVE-2023-32002",
+      "risk_level": "Critical Risk",
+      "simple_steps": " * If you're using Node.js versions 16.x, 18.x, or 20.x, be aware that there's a security issue with an experimental feature called the policy mechanism.\n* This issue allows certain modules to be required that aren't defined in the `policy.json` file, which can bypass the security policy.\n* To protect yourself, consider the following steps:\n  + Disable the experimental policy mechanism by setting `\"experimental.modules.enabled\": false` in your `node.js` configuration file (usually named `node.js` or `nodenv/nodemodule.json`).\n  + If you need to use specific modules that might not be defined in the `policy.json` file, consider adding them to the whitelist by updating the `policy.json` file.\n  + Keep your Node.js installation updated with the latest security patches.\n  + Avoid using experimental features until they have been fully tested and deemed safe for production use.",
+      "original_score": 9.8
+    },
+    {
+      "cve_id": "CVE-2023-30585",
+      "risk_level": "High Risk",
+      "simple_steps": " * If you're using Windows and installed Node.js using the .msi installer, there's a security issue you should be aware of.\n* During the repair process, the \"msiexec.exe\" program tries to read the %USERPROFILE% variable, but if this variable's path doesn't exist, it attempts to create a new one in a risky way.\n* Malicious actors or trojans can manipulate the %USERPROFILE% variable in the Windows registry, tricking the \"msiexec.exe\" process into creating folders in unintended and potentially harmful locations.\n* To protect yourself, consider using an alternative installation method for Node.js, such as the Node.js Installer for Windows or a package manager like npm or yarn.\n* If you must use the .msi installer, ensure your system and antivirus software are up-to-date to minimize the risk of malware infections.\n* Regularly monitor your system for any unusual folder creations or other suspicious activity.\n* Keep your operating system and all software updated to patch known vulnerabilities.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-30588",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * If you're using Node.js versions 16, 18, or 20 for your applications, be aware of the following vulnerability:\n* An error can occur when an incorrect public key is used to create an x509 certificate using the `crypto.X509Certificate()` API.\n* This error doesn't terminate the process as expected, making your application susceptible to Denial of Service (DoS) attacks.\n* Attackers can disrupt your application's processing by forcefully interrupting the certificate creation process.\n* Once the interruption happens, the application context is lost, causing a DoS scenario.\n\nTo protect yourself from this vulnerability:\n\n1. Update your Node.js version to the latest stable release to ensure you have the latest security patches.\n2. Double-check any public keys provided for certificate creation to ensure their validity.\n3. Implement input validation checks to reject any incorrect or suspicious public keys before certificate creation.\n4. Use a trusted Certificate Authority (CA) to generate your SSL/TLS certificates.\n5. Monitor your application for any unusual behavior or signs of a DoS attack.\n6. Implement",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-30590",
+      "risk_level": "High Risk",
+      "simple_steps": " * When using the `generateKeys()` API function from `crypto.createDiffieHellman()`, be aware that it only generates a new private key if none has been set before.\n* This function is also required to generate the corresponding public key after setting a private key.\n* However, the documentation states that this API call generates both private and public key values.\n* This discrepancy between the documented and actual behavior could lead to security issues in your applications.\n* Here are some simple steps to help you mitigate this risk:\n    1. Read the documentation carefully: Make sure you understand what each API call does before using it in your application.\n    2. Set private keys explicitly: Always set the private key before generating the corresponding public key.\n    3. Validate keys: Double-check that both the private and public keys are generated correctly after each API call.\n    4. Use established libraries: Consider using well-known and trusted libraries for your cryptographic needs.\n    5. Regularly review your code: Keep your code up-to-date and periodically review it for any potential security vulnerabilities.",
+      "original_score": 7.5
+    }
+  ],
+  "openssl 3.0.7": [
+    {
+      "cve_id": "CVE-2019-0190",
+      "risk_level": "High Risk",
+      "simple_steps": " * A problem has been discovered in how a specific software component called mod_ssl handles a process called client renegotiations.\n* This issue could allow a distant attacker to send a specially designed request, which could cause mod_ssl to get stuck in a loop, leading to a denial of service (website becoming unavailable).\n* This problem can only occur when using the Apache HTTP Server version 2.4.37 and OpenSSL version 1.1.1 or later.\n* To protect yourself, follow these steps:\n\t+ Check your Apache HTTP Server and OpenSSL versions: Go to your server or website's control panel, look for a section on software versions or contact your hosting provider to find out the current versions of Apache HTTP Server and OpenSSL installed.\n\t+ Update your software: If you are using the affected versions (Apache HTTP Server 2.4.37 and OpenSSL 1.1.1 or later), update them to the latest, secure versions as soon as possible. This can usually be done through your control panel or by contacting your hosting provider.\n\t+ Enable SSL/TLS protocols: Make sure SSL/TLS (Secure Sockets L",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2022-3996",
+      "risk_level": "High Risk",
+      "simple_steps": " * A security issue can occur with certain digital certificates called X.509.\n* If a certificate has a mistake in its policy constraints, it could cause a problem.\n* On some systems, like Windows, this issue may result in a service interruption or crash (denial of service).\n* This issue usually doesn't affect publicly accessible servers, as policy processing isn't typically enabled in such cases.\n* To prevent this issue, make sure that the command line utilities you use don't have the `-policy` argument when working with certificates.\n* If you're using a programming language like C or C++, avoid calling the function `X509_VERIFY_PARAM_set1_policies()` when handling certificates.\n* Keep your operating system and certificate handling software updated to protect against known vulnerabilities.\n* Regularly check your systems for any unusual behavior or crashes, and address any issues promptly.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2022-4304",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * An issue called a \"timing side channel\" exists in OpenSSL's RSA decryption process.\n* This vulnerability could allow someone to recover encrypted information over a network.\n* To exploit this, an attacker would need to send many messages for decryption.\n* This issue affects RSA encryption modes: PKCS#1 v1.5, RSA-OEAP, and RSASVE.\n* In the context of a secure connection like TLS, RSA is used by the client to encrypt a secret key (pre-master secret) and send it to the server.\n* If an attacker intercepts a genuine connection, they might be able to send trial messages to the server and measure the time it takes to process each one.\n* After enough trial messages, the attacker could potentially recover the pre-master secret used in the original connection.\n* Once they have the pre-master secret, they could decrypt the application data sent during that connection.\n\nTo protect yourself:\n\n* Keep your OpenSSL software up-to-date with the latest security patches.\n* Use secure communication protocols like TLS 1.3, which includes better",
+      "original_score": 5.9
+    },
+    {
+      "cve_id": "CVE-2022-4450",
+      "risk_level": "High Risk",
+      "simple_steps": " * A PEM file is a type of file used for storing digital certificates and keys in a secure way.\n* A function called PEM_read_bio_ex() is used to read and parse PEM files in OpenSSL.\n* If this function encounters a PEM file with no payload data, it will return an error but still provide a pointer to a buffer that has already been freed.\n* If the caller of this function frees this buffer as well, it will cause a \"double free\" error, leading to a crash.\n* An attacker could provide a malicious PEM file to cause this crash, potentially leading to a denial of service attack.\n* The functions PEM_read_bio() and PEM_read() are also affected as they are just wrappers around PEM_read_bio_ex().\n* Other OpenSSL functions like PEM_X509_INFO_read_bio_ex() and SSL_CTX_use_serverinfo_file() are also impacted.\n* However, not all uses of these functions in OpenSSL are vulnerable, as some callers do not free the header argument when an error occurs.\n* The OpenSSL",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-0215",
+      "risk_level": "High Risk",
+      "simple_steps": " * The function BIO_new_NDEF can cause a problem if it's called directly by applications, especially when it's followed by BIO_pop().\n* This issue occurs when an invalid public key is used in CMS, and the function returns a NULL result.\n* In this case, the filter BIO is freed but the BIO chain is not properly cleaned up, leading to a use-after-free error.\n* This error can cause a crash or unexpected behavior.\n* This issue can be triggered in the internal function B64_write_ASN1, which is called by several other public API functions: PEM_write_bio_ASN1_stream, PEM_write_bio_CMS_stream, PEM_write_bio_PKCS7_stream, SMIME_write_ASN1, SMIME_write_CMS, and SMIME_write_PKCS7.\n* Other functions that might be affected include i2d_ASN1_bio_stream, BIO_new_CMS, BIO_new_PKCS7, i2d_CMS_bio_stream, and i2d",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-0216",
+      "risk_level": "High Risk",
+      "simple_steps": " * An application may crash if it tries to read incorrectly formatted digital certificates using certain OpenSSL functions (d2i_PKCS7(), d2i_PKCS7_bio(), or d2i_PKCS7_fp()).\n* This issue, called an \"invalid pointer dereference,\" can be exploited by attackers to cause the application to stop working (Denial of Service attack).\n* Third-party applications that are not part of OpenSSL may use these functions on untrusted data, making them vulnerable to this attack.\n* To protect yourself, make sure all applications installed on your system are updated to the latest version.\n* Install and enable a reliable firewall to block unauthorized access to your system.\n* Avoid opening suspicious emails or visiting untrustworthy websites, as they could contain malformed certificates that could exploit this vulnerability.\n* Keep your operating system and other software up-to-date with the latest security patches.\n* Use a reputable antivirus or anti-malware solution to help protect your system from potential attacks.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-0217",
+      "risk_level": "High Risk",
+      "simple_steps": " * An application may try to check the security of a public key in an untrusted source, which could lead to a problem.\n* This problem is called an \"invalid pointer dereference on read.\" It can cause the application to crash.\n* An attacker can exploit this issue to make the application stop working, also known as a \"denial of service attack.\"\n* To protect yourself, avoid using public keys from untrusted sources in your applications, especially if they have additional security requirements.\n* Always make sure that the public keys you use come from trusted and reliable sources.\n* If you're not sure about the source of a public key, consider using a trusted security library or service to validate it before use.\n* Keep your applications and security libraries up to date with the latest patches and updates to protect against known vulnerabilities.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-0286",
+      "risk_level": "High Risk",
+      "simple_steps": " * A type confusion vulnerability exists in an X.509 certificate's X.400 address processing.\n* X.400 addresses were incorrectly identified as a certain data type during processing.\n* This mistake could allow an attacker to provide incorrect data to a memory comparison function.\n* When certificate revocation list (CRL) checking is enabled, an attacker might be able to read memory contents or cause a denial of service.\n* For an attack to occur, the attacker needs to provide both the certificate chain and the CRL, which don't necessarily need valid signatures.\n* However, if the attacker only controls one of these inputs, they would need an X.400 address as a CRL distribution point, which is not common.\n* To protect yourself:\n  + Keep your software up-to-date to ensure the latest security patches are applied.\n  + Be cautious when downloading certificates and CRLs from the internet, making sure they come from trusted sources.\n  + Regularly review your system logs for any unusual or suspicious activity.\n  + Consider using a trusted third-party certificate authority for managing your certificates and CRL",
+      "original_score": 7.4
+    },
+    {
+      "cve_id": "CVE-2023-0401",
+      "risk_level": "High Risk",
+      "simple_steps": " * A NULL pointer issue can occur when checking signatures on certain types of encrypted data.\n* This problem arises when the specific hash algorithm used for the signature isn't accessible to OpenSSL, but OpenSSL recognizes it.\n* When the hash algorithm initialization fails, there's a missing check for the error, leading to incorrect use of the digest API. This can result in a crash.\n* The absence of an algorithm can be due to using a FIPS-enabled configuration or not loading the legacy provider.\n* This vulnerability affects how some third-party applications verify signatures on untrusted data, but it doesn't impact OpenSSL's TLS implementation directly.\n\nTo mitigate this issue, consider these steps:\n\n* Ensure all your software, including OpenSSL, is up-to-date with the latest security patches.\n* If using FIPS-enabled configuration, make sure that all required providers are properly loaded.\n* Always verify the integrity and authenticity of data using trusted sources or certified certificates.\n* Implement proper error handling and validation checks to avoid potential crashes caused by NULL pointer dereferences.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2022-4203",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * A read buffer overrun is a potential security issue in the X.509 certificate verification process.\n* This issue can be found during name constraint checking, after the certificate chain signature has been verified.\n* It can be caused by a Certificate Authority (CA) signing a malicious certificate or an application continuing certificate verification despite a failure to find a trusted issuer.\n* The read buffer overrun could cause a crash, leading to a denial of service attack.\n* In theory, it could also allow the attacker to access sensitive information, such as private keys or plaintext, but no known working exploit exists for this.\n\nSimple steps for a non-technical user:\n\n* Keep your software up-to-date to ensure that any known certificate verification vulnerabilities are patched.\n* Be cautious when connecting to websites or servers that you don't trust.\n* If you use a VPN or other secure connection service, make sure it's from a reputable provider and that it's updated regularly.\n* If you're using a TLS server and require client authentication, make sure that only trusted clients are able to connect.\n* Consider implementing additional security measures, such",
+      "original_score": 4.9
+    },
+    {
+      "cve_id": "CVE-2023-0464",
+      "risk_level": "High Risk",
+      "simple_steps": " * A problem has been found in OpenSSL, a software used for secure communication, affecting all supported versions.\n* This issue is related to how the software checks the authenticity of digital certificates that contain certain restrictions (policy constraints).\n* Attackers could potentially abuse this vulnerability by presenting a fake certificate chain, causing the system to use a lot of resources, leading to a Denial-of-Service (DoS) attack.\n* By default, this feature (policy processing) is turned off, but users can enable it by running OpenSSL commands with the `-policy` argument or using the function `X509_VERIFY_PARAM_set1_policies()`.\n* To protect yourself from this issue, it is recommended to:\n  + Update OpenSSL to the latest version as soon as possible.\n  + If updating is not immediately possible, disable the `-policy` flag when using OpenSSL command-line utilities.\n  + Regularly check for and install software updates on all your devices.\n  + Use a reliable and trusted source for digital certificates.\n  + Consider implementing additional security measures, like a firewall, to protect against DoS attacks.",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-0465",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Some applications may accept certificates that don't follow the standard verification process, making them potentially vulnerable to attacks.\n* A malicious Certificate Authority (CA) can take advantage of this and issue invalid certificates with incorrect policies.\n* OpenSSL, a common software used to verify certificates, ignores these invalid policies silently and skips other checks.\n* This allows the malicious certificate to bypass important security checks.\n* To help protect against this type of attack, you can enable policy processing:\n  + For OpenSSL users, you can enable policy processing by adding the `-policy` argument when using command line utilities.\n  + Alternatively, you can call the `X509_VERIFY_PARAM_set1_policies()` function in your code.\n  + Enabling policy processing will ensure that all certificates are properly checked against their stated policies.",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-0466",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * If you're using OpenSSL for certificate verification in your applications, and you want to ensure the certificate policies are checked:\n* Instead of using the X509_VERIFY_PARAM_add0_policy() function, use X509_VERIFY_PARAM_set1_policies() or:\n* Explicitly enable the policy check by calling X509_VERIFY_PARAM_set_flags() with the X509_V_FLAG_POLICY_CHECK flag argument.\n* Keep in mind that certificate policy checks are not enabled by default in OpenSSL and are not commonly used by applications.\n* By following these steps, you'll be able to properly check the certificate policies, improving the security of your applications.",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-1255",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * A bug was found in the AES-XTS decryption process on 64-bit ARM platforms.\n* This issue can lead to applications using this algorithm crashing.\n* The problem occurs when the ciphertext size is not a multiple of 5 in 16-byte blocks, such as 144 bytes or 1024 bytes.\n* If the memory right after the ciphertext buffer is not properly allocated, the application can crash, causing a denial of service.\n* An attacker would need to control the size and location of the ciphertext buffer being decrypted by an application to exploit this vulnerability.\n* To protect yourself, ensure that the applications you use have been updated to fix this issue, or use alternative encryption algorithms if possible.\n* If you're a developer, verify that your code properly handles the ciphertext size when using AES-XTS on 64-bit ARM platforms.\n* Maintain good memory management practices to prevent crashes due to improperly allocated memory.",
+      "original_score": 5.9
+    },
+    {
+      "cve_id": "CVE-2023-2650",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Some types of data can cause your system to process very slowly if they contain certain long numbers called Object Identifiers (OIDs).\n* Applications that use this data directly or use specific OpenSSL subsystems may experience noticeable to very long delays.\n* These subsystems include OCSP, PKCS7/SMIME, CMS, CMP/CRMF, and TS.\n* OpenSSL is a software library used for encryption and decryption of data.\n* The long delays can lead to a Denial of Service (DoS), where the application becomes unresponsive or crashes.\n* An Object Identifier is made up of several numbers, and a function called OBJ_obj2txt() can be used to convert it to its text form.\n* If one of these numbers is extremely large, the conversion process can take a very long time.\n* OpenSSL 3.0 introduced support for fetching cryptographic algorithms using names or identifiers in text form, including Object Identifiers.\n* These Object Identifiers can be received through the AlgorithmIdentifier structure, which is used to specify which cryptographic algorithm to use.\n* Applications that use OBJ_obj",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2023-2975",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * A security problem has been found in a specific way that data is authenticated using the AES-SIV algorithm in OpenSSL.\n* Applications that use this algorithm and try to authenticate empty data entries as associated data may be tricked by changing or reordering these empty entries since they are ignored by OpenSSL.\n* To authenticate empty data, an application should call EVP_EncryptUpdate() or EVP_CipherUpdate() with a NULL pointer as the output buffer and a 0 length as the input buffer. However, OpenSSL incorrectly returns success instead of performing the authentication operation, leaving empty data unauthenticated.\n* This issue does not impact the authentication of non-empty associated data and it's not common for applications to use empty associated data entries. Therefore, it's considered a Low severity issue.\n\nSimple, actionable steps for a non-technical user:\n\n* If you're the developer of an application using the AES-SIV algorithm and you're authenticating empty data entries as associated data, be aware that OpenSSL might not be authenticating these empty entries properly.\n* Review your application's code to ensure that",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-3817",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Issue: Some functions in OpenSSL may take a long time to check certain keys or parameters for DH (Diffie-Hellman) encryption, especially if these keys or parameters are from an untrusted source.\n* Impact: Applications using DH_check(), DH_check_ex(), or EVP_PKEY_param_check() functions to check DH keys or parameters may experience delays and potentially be vulnerable to Denial of Service attacks.\n* Solution: To avoid potential delays and security risks, consider the following steps:\n    * Update OpenSSL to the latest version, which may have already fixed this issue.\n    * Verify the source of DH keys and parameters before using them in applications. Trusted sources could be your own organization or known, reliable partners.\n    * If possible, use alternative encryption methods, like RSA or ECDH, for key exchange instead of DH.\n* More details:\n    * Functions like DH_check() perform various checks on DH parameters and can be affected by long computation times when dealing with large q parameter values.\n    * Applications that call DH_check() or other related functions (DH_check_",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-4807",
+      "risk_level": "High Risk",
+      "simple_steps": " * A bug was found in the POLY1305 MAC implementation in OpenSSL on Windows 64 platforms.\n* This bug may cause applications to have corrupted internal states when using newer X86_64 processors with AVX512-IFMA instructions.\n* The issue occurs because the implementation does not save the contents of non-volatile XMM registers before zeroing them out.\n* The consequences of this corruption can range from no effect to the attacker gaining control of the application process.\n* The POLY1305 MAC algorithm is commonly used in the CHACHA20-POLY1305 AEAD algorithm, which is frequently used in TLS protocol versions 1.2 and 1.3.\n* A malicious client can influence whether this AEAD cipher is used, potentially impacting server applications using OpenSSL.\n* However, no concrete applications have been identified as affected by this issue, so it is considered a Low severity security issue.\n* To mitigate the risk, you can disable AVX512-IFMA instructions support at runtime by setting the environment variable OPENSSL_ia32cap to \"",
+      "original_score": 7.8
+    },
+    {
+      "cve_id": "CVE-2023-5363",
+      "risk_level": "High Risk",
+      "simple_steps": " * A problem has been found with the way keys and initialisation vectors (IVs) are processed in some encryption methods.\n* This issue can lead to the IV being cut short or extended, which might result in the loss of confidentiality for certain encryption modes.\n* The problem occurs when adjusting the key or IV length through the \"keylen\" or \"ivlen\" parameters in an OSSL_PARAM array after the key and IV have already been set.\n* The following encryption methods and modes are affected: RC2, RC4, RC5, CCM, GCM, and OCB.\n* For CCM, GCM, and OCB modes, a shortened IV can cause the same IV to be used repeatedly, potentially leading to the loss of confidentiality.\n* Changing key and IV lengths is not a frequent operation and the vulnerable API is new. However, if an application is affected, the consequences could be serious.\n* OpenSSL SSL/TLS is not impacted by this issue.\n* OpenSSL FIPS providers (versions 3.0 and 3.1) are not affected since the issue occurs outside their boundaries.\n* OpenSSL 3.1 and 3.0 are",
+      "original_score": 7.5
+    },
+    {
+      "cve_id": "CVE-2023-5678",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * Long X9.42 DH keys or parameters can cause applications to run very slowly.\n* Applications that use functions like DH_generate_key() or DH_check_pub_key() to work with X9.42 DH keys or parameters might experience delays.\n* If you receive X9.42 DH keys or parameters from an untrusted source, your application could be denied service due to these delays.\n* DH_check() performs necessary checks, but DH_check_pub_key() does not, making it vulnerable to excessively large P and Q parameters.\n* DH_generate_key() checks for excessively large P but not for excessively large Q.\n* Applications that call DH_generate_key() or DH_check_pub_key() with untrusted keys or parameters could be vulnerable to Denial of Service attacks.\n* Several other OpenSSL functions like DH_check_pub_key_ex(), EVP_PKEY_public_check(), and EVP_PKEY_generate() are also affected.\n* The OpenSSL command line applications pkey and genpkey are also vulnerable when",
+      "original_score": 5.3
+    },
+    {
+      "cve_id": "CVE-2023-6129",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * A bug was found in the POLY1305 MAC implementation in OpenSSL for PowerPC CPUs.\n* This bug can cause applications to have corrupted internal states if the CPU provides certain vector instructions.\n* The consequences of this corruption can range from no effect to the attacker gaining complete control of the application process.\n* This issue is most likely to result in incorrect application calculations or a crash leading to a denial of service.\n* The POLY1305 MAC algorithm is commonly used with the CHACHA20-POLY1305 AEAD algorithm, which is frequently used with TLS protocol versions 1.2 and 1.3.\n* If a malicious client can influence whether this AEAD cipher is used, then TLS server applications using OpenSSL could be impacted.\n* However, no specific applications have been identified as being affected by this issue, so it is currently considered a low severity security issue.\n\nTo protect yourself from this vulnerability:\n\n* Keep your OpenSSL library updated to the latest version.\n* Use TLS protocol version 1.2 or 1.3 with secure cipher suites that do",
+      "original_score": 6.5
+    },
+    {
+      "cve_id": "CVE-2024-0727",
+      "risk_level": "Medium Risk",
+      "simple_steps": " * A type of file called PKCS12 might make your OpenSSL software crash.\n* These files can contain certificates and keys, and they can come from untrusted sources.\n* OpenSSL should check for certain parts of these files being empty (NULL), but it doesn't, leading to a problem.\n* This issue can cause OpenSSL to stop working and is called a Denial of Service attack.\n* Applications using OpenSSL to process PKCS12 files from untrusted sources are at risk.\n* Specific OpenSSL functions that can be affected are: PKCS12_parse(), PKCS12_unpack_p7data(), PKCS12_unpack_p7encdata(), PKCS12_unpack_authsafes(), and PKCS12_newpass().\n* FIPS modules in versions 3.2, 3.1, and 3.0 are not affected by this issue.\n\nTo protect yourself:\n\n* Avoid processing PKCS12 files from untrusted sources using OpenSSL.\n* If you must process PKCS12 files, consider using a different software or library that can handle these files secure",
+      "original_score": 5.5
+    }
+  ]
+}

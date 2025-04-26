@@ -1,6 +1,7 @@
 import subprocess
 import platform
 import os
+import re
 
 def run_command(cmd):
     result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
@@ -52,14 +53,36 @@ def get_npm_packages():
         npm_packages = "NPM is not installed"
     return npm_packages
 
+def get_node_version_windows():
+    node_version = run_command("node -v")
+    if node_version == None:
+        node_version = "Node is not installed"
+    return node_version
+    # version_pattern = re.compile(r'v(\d+\.\d+\.\d+)')
+    
+    # # Method 1: Try direct execution (if in PATH)
+    # try:
+    #     result = subprocess.check_output(
+    #         ['node', '--version'],
+    #         stderr=subprocess.STDOUT,
+    #         shell=True,
+    #         text=True
+    #     )
+    #     match = version_pattern.search(result)
+    #     if match:
+    #         return match.group(1)
+    # except (subprocess.CalledProcessError, FileNotFoundError):
+    #     pass
+
 def run_scan():
     return{
-        "os_raw":get_os_info(),
-        "installed_apps_raw":get_installed_apps(),
-        "services_raw":get_services(),
-        "open_ports_raw":get_open_ports(),
-        "python2_packages_raw":get_python2_packages(),
-        "python3_packages_raw":get_python3_packages(),
-        "npm_packages_raw":get_npm_packages(),
-        "platform": platform.system(),
+        # "os_raw":get_os_info(),
+        # "installed_apps_raw":get_installed_apps(),
+        # "services_raw":get_services(),
+        # "open_ports_raw":get_open_ports(),
+        # "python2_packages_raw":get_python2_packages(),
+        # "python3_packages_raw":get_python3_packages(),
+        # "npm_packages_raw":get_npm_packages(),
+        # "platform": platform.system(),
+        "node_version_raw": get_node_version_windows(),
     }

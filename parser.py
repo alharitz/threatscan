@@ -116,19 +116,31 @@ def parse_npm_packages(raw_text):
     
     return json.dumps(packages, indent=4)  
 
+def parse_node_version(version):
+    packages = []
+    
+    clean_version = version.removeprefix('v')
+    packages.append({
+        "name": "node",
+        "version": clean_version
+    })
+    
+    return json.dumps(packages, indent=4)
+
 def parse_scan_results(raw_results):
     """Main function to parse all scan results"""
     platform_type = raw_results.get("platform", "")
     
     parsed_results = {
-        "os": parse_os_info(raw_results.get("os_raw", ""), platform_type),
-        "installed_apps": parse_installed_apps(raw_results.get("installed_apps_raw", ""), platform_type),
-        "services": parse_services(raw_results.get("services_raw", ""), platform_type),
-        "open_ports": parse_open_ports(raw_results.get("open_ports_raw", ""), platform_type),
-        "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
-        "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
-        "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
-        "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # "os": parse_os_info(raw_results.get("os_raw", ""), platform_type),
+        # "installed_apps": parse_installed_apps(raw_results.get("installed_apps_raw", ""), platform_type),
+        # "services": parse_services(raw_results.get("services_raw", ""), platform_type),
+        # "open_ports": parse_open_ports(raw_results.get("open_ports_raw", ""), platform_type),
+        # "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
+        # "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
+        # "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
+        "node_version": parse_node_version(raw_results.get("node_version_raw")),
+        # "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     return parsed_results
