@@ -26,23 +26,15 @@ def simplify_mitigation(cve_data, api_choice="mistral"):
                 prompt = prompt_template.format(description=vuln["description"])
                 
                 # Choose API endpoint
-                if api_choice == "mistral":
-                    response = requests.post(
-                        f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/{MODEL_ID}",
-                        headers={
-                            "Authorization": f"Bearer {AUTH_TOKEN}",
-                            "Content-Type": "application/json"
-                        },
-                        json={"prompt": prompt}
-                    )
-                elif api_choice == "llama":
-                    response = requests.post(
-                        "https://api.groq.com/...",
-                        json={
-                            "model": "llama3-8b-8192",
-                            "messages": [{"role": "user", "content": prompt}]
-                        }
-                    )
+                
+                response = requests.post(
+                    f"https://api.cloudflare.com/client/v4/accounts/{ACCOUNT_ID}/ai/run/{MODEL_ID}",
+                    headers={
+                        "Authorization": f"Bearer {AUTH_TOKEN}",
+                        "Content-Type": "application/json"
+                    },
+                    json={"prompt": prompt}
+                )
                 
                 if response.ok:
                     # Parse response

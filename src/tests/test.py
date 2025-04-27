@@ -1,16 +1,16 @@
-from flask import Flask
+import src.app.scanner as scanner
+import os
 import requests
-import time
 import json
-from get_mitigation import simplify_mitigation
+import time
+import api.llm_api as llm_api
 
-# Test software list with known vulnerabilities
-# software_list = [
-#     {"name": "npm", "version": "7.24.2"},         # CVE-2022-37599
-#     # {"name": "node", "version": "16.14.2"},      # CVE-2022-32213
-#     # {"name": "openssl", "version": "3.0.7"},      # CVE-2023-0286
-#     # {"name": "python", "version": "3.10.6"}       # No CVE (test negative case)
-# ]
+software_list = [
+    {"name": "npm", "version": "8.5.1"},         # CVE-2022-37599
+    {"name": "node", "version": "16.14.2"},      # CVE-2022-32213
+    {"name": "openssl", "version": "3.0.7"},      # CVE-2023-0286
+    {"name": "python", "version": "3.10.6"}       # No CVE (test negative case)
+]
 
 def get_cpes(name, version):
     url = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
@@ -61,10 +61,10 @@ def get_cves(cpe):
         print(f"CVE Error for {cpe}: {str(e)}")
         return []
 
-def main(result):
-    node_json = result['node_version']
-    software_list = json.loads(node_json)
-    print(f"node version: {software_list}")
+def main():
+    # node_json = result['node_version']
+    # software_list = json.loads(node_json)
+    # print(f"node version: {software_list}")
     results = {}
     
     for software in software_list:
@@ -106,7 +106,7 @@ def main(result):
     print("Vulnerability report generated successfully!")
     
     # Mitigation
-    return simplify_mitigation(results)
+    return llm_api.simplify_mitigation(results)
     
     # with open("mitigation_results.json", "w") as f:
     #     json.dump(results, f, indent=2)

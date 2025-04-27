@@ -25,7 +25,8 @@ def parse_installed_apps(raw_text, platform_type):
                 if line.strip():
                     values = [v.strip() for v in re.split(r'\s{2,}', line.strip(), maxsplit=len(headers))]
                     if len(values) == len(headers):
-                        apps.append(dict(zip(headers, values)))
+                        row = dict(zip(headers, values))
+                        apps.append({k.lower(): v for k, v in row.items()})
     return json.dumps(apps, indent=4)
 
 def parse_services(raw_text, platform_type):
@@ -132,15 +133,15 @@ def parse_scan_results(raw_results):
     platform_type = raw_results.get("platform", "")
     
     parsed_results = {
-        # "os": parse_os_info(raw_results.get("os_raw", ""), platform_type),
-        # "installed_apps": parse_installed_apps(raw_results.get("installed_apps_raw", ""), platform_type),
-        # "services": parse_services(raw_results.get("services_raw", ""), platform_type),
-        # "open_ports": parse_open_ports(raw_results.get("open_ports_raw", ""), platform_type),
-        # "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
-        # "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
-        # "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
+        "os": parse_os_info(raw_results.get("os_raw", ""), platform_type),
+        "installed_apps": parse_installed_apps(raw_results.get("installed_apps_raw", ""), platform_type),
+        "services": parse_services(raw_results.get("services_raw", ""), platform_type),
+        "open_ports": parse_open_ports(raw_results.get("open_ports_raw", ""), platform_type),
+        "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
+        "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
+        "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
         "node_version": parse_node_version(raw_results.get("node_version_raw")),
-        # "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
     return parsed_results
