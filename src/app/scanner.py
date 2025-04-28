@@ -1,6 +1,7 @@
 import subprocess
 import platform
 import os
+import re
 
 def run_command(cmd):
     result = subprocess.run(cmd, capture_output=True, text=True, shell=True)
@@ -47,10 +48,16 @@ def get_python3_packages():
     return python3_packages
 
 def get_npm_packages():
-    npm_packages = run_command("npm list -g --depth=0")
+    npm_packages = run_command("    ")
     if npm_packages == None:
         npm_packages = "NPM is not installed"
     return npm_packages
+
+def get_node_version_windows():
+    node_version = run_command("node -v")
+    if node_version == None:
+        node_version = "Node is not installed"
+    return node_version
 
 def run_scan():
     return{
@@ -62,4 +69,5 @@ def run_scan():
         "python3_packages_raw":get_python3_packages(),
         "npm_packages_raw":get_npm_packages(),
         "platform": platform.system(),
+        "node_version_raw": get_node_version_windows(),
     }
