@@ -25,7 +25,8 @@ def parse_installed_apps(raw_text, platform_type):
                 if line.strip():
                     values = [v.strip() for v in re.split(r'\s{2,}', line.strip(), maxsplit=len(headers))]
                     if len(values) == len(headers):
-                        apps.append(dict(zip(headers, values)))
+                        row = dict(zip(headers, values))
+                        apps.append({k.lower(): v for k, v in row.items()})
     return json.dumps(apps, indent=4)
 
 def parse_services(raw_text, platform_type):
@@ -116,6 +117,17 @@ def parse_npm_packages(raw_text):
     
     return json.dumps(packages, indent=4)  
 
+def parse_node_version(version):
+    packages = []
+    
+    clean_version = version.removeprefix('v')
+    packages.append({
+        "name": "node",
+        "version": clean_version
+    })
+    
+    return json.dumps(packages, indent=4)
+
 def parse_scan_results(raw_results):
     """Main function to parse all scan results"""
     platform_type = raw_results.get("platform", "")
@@ -128,6 +140,7 @@ def parse_scan_results(raw_results):
         "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
         "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
         "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
+        "node_version": parse_node_version(raw_results.get("node_version_raw")),
         "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
