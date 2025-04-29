@@ -3,17 +3,19 @@ import json
 import datetime
 
 def parse_os_info(raw_text, platform_type):
+    if not raw_text:
+        return {"error": "No data available"}
+    
     if platform_type == "Windows":
         lines = [line for line in raw_text.split('\n') if line.strip()]
         if len(lines) >= 2:
-            headers = [h.strip() for h in re.split(r'\s{2,}', lines[0].strip())]
             values = [v.strip() for v in re.split(r'\s{2,}', lines[1].strip())]
-
-            result = {}
-            for i in range(min(len(headers), len(values))):
-                result[headers[i]] = values[i]
-            return json.dumps(result, indent=4)
-    return {"raw": raw_text}
+            result = {
+                "name" : values[0],
+                "version" : values[1]
+            }
+            return result
+    return {"error": "Unsupported platform"}
 
 def parse_installed_apps(raw_text, platform_type):
     apps = []
@@ -27,7 +29,7 @@ def parse_installed_apps(raw_text, platform_type):
                     if len(values) == len(headers):
                         row = dict(zip(headers, values))
                         apps.append({k.lower(): v for k, v in row.items()})
-    return json.dumps(apps, indent=4)
+    return apps
 
 def parse_services(raw_text, platform_type):
     services = []
@@ -49,7 +51,7 @@ def parse_services(raw_text, platform_type):
 
             if service and 'name' in service and 'state' in service:
                 services.append(service)
-    return json.dumps(services, indent=4)
+    return services
 
 def parse_open_ports (raw_text, platform_type):
     ports = []
@@ -72,7 +74,7 @@ def parse_python_packages(raw_text, version):
     packages = []
     if raw_text and "Package" in raw_text and "Version" in raw_text:
         lines = [line.strip() for line in raw_text.split('\n') if line.strip()]
-
+        
         start_idx = 0
         for i, line in enumerate(lines):
             if "Package" in line and "Version" in line:
@@ -87,61 +89,40 @@ def parse_python_packages(raw_text, version):
                     "version": parts[1]
                 })
     elif "not installed" in raw_text:
-        return f"Python {version} is not installed"
+        return {"error": f"Python {version} is not installed"}
     
-    return json.dumps(packages, indent=4)
+    return packages
 
 def parse_npm_packages(raw_text):
     packages = []
     
     if raw_text is None or "not installed" in raw_text.lower():
-        return "NPM is not installed"
+        return {"error": "NPM is not installed"}
     
     lines = raw_text.split('\n')
     if len(lines) <= 1:
-        return json.dumps({"packages": []}, indent=4)
+        return []
     
     for line in lines[1:]:
         line = line.strip()
-        
         if "@" in line:
             parts = line.rsplit('@', 1)
             if len(parts) == 2:
                 name = parts[0].strip()
                 name = re.sub(r'^[^a-zA-Z0-9@_-]+', '', name)
-                
                 packages.append({
                     "name": name,
                     "version": parts[1].strip()
                 })
     
-    return json.dumps(packages, indent=4)  
+    return packages
 
 def parse_node_version(version):
-    packages = []
+    if not version:
+        return {"error": "Node is not installed"}
     
     clean_version = version.removeprefix('v')
-    packages.append({
+    return {
         "name": "node",
         "version": clean_version
-    })
-    
-    return json.dumps(packages, indent=4)
-
-def parse_scan_results(raw_results):
-    """Main function to parse all scan results"""
-    platform_type = raw_results.get("platform", "")
-    
-    parsed_results = {
-        "os": parse_os_info(raw_results.get("os_raw", ""), platform_type),
-        "installed_apps": parse_installed_apps(raw_results.get("installed_apps_raw", ""), platform_type),
-        "services": parse_services(raw_results.get("services_raw", ""), platform_type),
-        "open_ports": parse_open_ports(raw_results.get("open_ports_raw", ""), platform_type),
-        "python2_packages": parse_python_packages(raw_results.get("python2_packages_raw", ""), "2"),
-        "python3_packages": parse_python_packages(raw_results.get("python3_packages_raw", ""), "3"),
-        "npm_packages": parse_npm_packages(raw_results.get("npm_packages_raw", "")),
-        "node_version": parse_node_version(raw_results.get("node_version_raw")),
-        "date_time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
-
-    return parsed_results
