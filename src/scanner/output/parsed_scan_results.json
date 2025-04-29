@@ -1,886 +1,688 @@
 {
-    "node_version": {
-        "name": "node",
-        "version": "22.11.0"
-    },
+    "python2_packages": [],
+    "python3_packages": [],
     "os": {
         "name": "Microsoft Windows 11 Home Single Language",
         "version": "10.0.26100"
     },
-    "python2_packages": [
-        {
-            "name": "pip",
-            "version": "19.2.3"
-        }
-    ],
-    "python3_packages": [
-        {
-            "name": "annotated-types",
-            "version": "0.6.0"
-        },
-        {
-            "name": "anyio",
-            "version": "4.2.0"
-        },
-        {
-            "name": "argon2-cffi",
-            "version": "23.1.0"
-        },
-        {
-            "name": "argon2-cffi-bindings",
-            "version": "21.2.0"
-        },
-        {
-            "name": "arrow",
-            "version": "1.3.0"
-        },
-        {
-            "name": "asttokens",
-            "version": "2.4.1"
-        },
-        {
-            "name": "async-lru",
-            "version": "2.0.4"
-        },
-        {
-            "name": "attrs",
-            "version": "23.2.0"
-        },
-        {
-            "name": "autocommand",
-            "version": "2.2.2"
-        },
-        {
-            "name": "Babel",
-            "version": "2.14.0"
-        },
-        {
-            "name": "bcrypt",
-            "version": "4.2.1"
-        },
-        {
-            "name": "beautifulsoup4",
-            "version": "4.12.3"
-        },
-        {
-            "name": "biopython",
-            "version": "1.83"
-        },
-        {
-            "name": "bleach",
-            "version": "6.1.0"
-        },
-        {
-            "name": "blinker",
-            "version": "1.7.0"
-        },
-        {
-            "name": "capstone",
-            "version": "6.0.0a2"
-        },
-        {
-            "name": "certifi",
-            "version": "2024.2.2"
-        },
-        {
-            "name": "cffi",
-            "version": "1.16.0"
-        },
-        {
-            "name": "charset-normalizer",
-            "version": "3.3.2"
-        },
-        {
-            "name": "cheroot",
-            "version": "10.0.0"
-        },
-        {
-            "name": "CherryPy",
-            "version": "18.9.0"
-        },
-        {
-            "name": "click",
-            "version": "8.1.7"
-        },
-        {
-            "name": "colorama",
-            "version": "0.4.6"
-        },
-        {
-            "name": "colored-traceback",
-            "version": "0.4.2"
-        },
-        {
-            "name": "comm",
-            "version": "0.2.1"
-        },
-        {
-            "name": "contourpy",
-            "version": "1.2.0"
-        },
-        {
-            "name": "cryptography",
-            "version": "44.0.0"
-        },
-        {
-            "name": "cycler",
-            "version": "0.12.1"
-        },
-        {
-            "name": "debugpy",
-            "version": "1.8.0"
-        },
-        {
-            "name": "decorator",
-            "version": "5.1.1"
-        },
-        {
-            "name": "defusedxml",
-            "version": "0.7.1"
-        },
-        {
-            "name": "dnspython",
-            "version": "2.7.0"
-        },
-        {
-            "name": "executing",
-            "version": "2.0.1"
-        },
-        {
-            "name": "fastjsonschema",
-            "version": "2.19.1"
-        },
-        {
-            "name": "Flask",
-            "version": "3.0.2"
-        },
-        {
-            "name": "fonttools",
-            "version": "4.48.1"
-        },
-        {
-            "name": "fqdn",
-            "version": "1.5.1"
-        },
-        {
-            "name": "frida",
-            "version": "16.1.11"
-        },
-        {
-            "name": "frida-tools",
-            "version": "12.3.0"
-        },
-        {
-            "name": "greenlet",
-            "version": "3.0.3"
-        },
-        {
-            "name": "grpcio",
-            "version": "1.71.0"
-        },
-        {
-            "name": "grpcio-tools",
-            "version": "1.71.0"
-        },
-        {
-            "name": "h11",
-            "version": "0.14.0"
-        },
-        {
-            "name": "httpcore",
-            "version": "1.0.2"
-        },
-        {
-            "name": "httpx",
-            "version": "0.26.0"
-        },
-        {
-            "name": "idna",
-            "version": "3.6"
-        },
-        {
-            "name": "inflect",
-            "version": "7.0.0"
-        },
-        {
-            "name": "intervaltree",
-            "version": "3.1.0"
-        },
-        {
-            "name": "ipykernel",
-            "version": "6.29.2"
-        },
-        {
-            "name": "ipython",
-            "version": "8.21.0"
-        },
-        {
-            "name": "ipywidgets",
-            "version": "8.1.1"
-        },
-        {
-            "name": "isoduration",
-            "version": "20.11.0"
-        },
-        {
-            "name": "itsdangerous",
-            "version": "2.1.2"
-        },
-        {
-            "name": "jaraco.collections",
-            "version": "5.0.0"
-        },
-        {
-            "name": "jaraco.context",
-            "version": "4.3.0"
-        },
-        {
-            "name": "jaraco.functools",
-            "version": "4.0.0"
-        },
-        {
-            "name": "jaraco.text",
-            "version": "3.12.0"
-        },
-        {
-            "name": "jedi",
-            "version": "0.19.1"
-        },
-        {
-            "name": "Jinja2",
-            "version": "3.1.3"
-        },
-        {
-            "name": "json5",
-            "version": "0.9.14"
-        },
-        {
-            "name": "jsonpointer",
-            "version": "2.4"
-        },
-        {
-            "name": "jsonschema",
-            "version": "4.21.1"
-        },
-        {
-            "name": "jupyter",
-            "version": "1.0.0"
-        },
-        {
-            "name": "jupyter_client",
-            "version": "8.6.0"
-        },
-        {
-            "name": "jupyter-console",
-            "version": "6.6.3"
-        },
-        {
-            "name": "jupyter_core",
-            "version": "5.7.1"
-        },
-        {
-            "name": "jupyter-events",
-            "version": "0.9.0"
-        },
-        {
-            "name": "jupyter-lsp",
-            "version": "2.2.2"
-        },
-        {
-            "name": "jupyter_server",
-            "version": "2.12.5"
-        },
-        {
-            "name": "jupyter_server_terminals",
-            "version": "0.5.2"
-        },
-        {
-            "name": "jupyterlab",
-            "version": "4.1.0"
-        },
-        {
-            "name": "jupyterlab_pygments",
-            "version": "0.3.0"
-        },
-        {
-            "name": "jupyterlab_server",
-            "version": "2.25.2"
-        },
-        {
-            "name": "jupyterlab-widgets",
-            "version": "3.0.9"
-        },
-        {
-            "name": "kiwisolver",
-            "version": "1.4.5"
-        },
-        {
-            "name": "lxml",
-            "version": "5.1.0"
-        },
-        {
-            "name": "Mako",
-            "version": "1.3.8"
-        },
-        {
-            "name": "MarkupSafe",
-            "version": "2.1.5"
-        },
-        {
-            "name": "matplotlib",
-            "version": "3.8.2"
-        },
-        {
-            "name": "matplotlib-inline",
-            "version": "0.1.6"
-        },
-        {
-            "name": "mistune",
-            "version": "3.0.2"
-        },
-        {
-            "name": "more-itertools",
-            "version": "10.2.0"
-        },
-        {
-            "name": "nbclient",
-            "version": "0.9.0"
-        },
-        {
-            "name": "nbconvert",
-            "version": "7.16.0"
-        },
-        {
-            "name": "nbformat",
-            "version": "5.9.2"
-        },
-        {
-            "name": "nest-asyncio",
-            "version": "1.6.0"
-        },
-        {
-            "name": "notebook",
-            "version": "7.0.7"
-        },
-        {
-            "name": "notebook_shim",
-            "version": "0.2.3"
-        },
-        {
-            "name": "numpy",
-            "version": "1.26.4"
-        },
-        {
-            "name": "overrides",
-            "version": "7.7.0"
-        },
-        {
-            "name": "packaging",
-            "version": "23.2"
-        },
-        {
-            "name": "pandocfilters",
-            "version": "1.5.1"
-        },
-        {
-            "name": "paramiko",
-            "version": "3.5.0"
-        },
-        {
-            "name": "parso",
-            "version": "0.8.3"
-        },
-        {
-            "name": "pillow",
-            "version": "10.2.0"
-        },
-        {
-            "name": "pip",
-            "version": "25.0.1"
-        },
-        {
-            "name": "platformdirs",
-            "version": "4.2.0"
-        },
-        {
-            "name": "plumbum",
-            "version": "1.9.0"
-        },
-        {
-            "name": "portend",
-            "version": "3.2.0"
-        },
-        {
-            "name": "prometheus-client",
-            "version": "0.19.0"
-        },
-        {
-            "name": "prompt-toolkit",
-            "version": "3.0.43"
-        },
-        {
-            "name": "protobuf",
-            "version": "5.29.3"
-        },
-        {
-            "name": "psutil",
-            "version": "5.9.8"
-        },
-        {
-            "name": "pure-eval",
-            "version": "0.2.2"
-        },
-        {
-            "name": "pwntools",
-            "version": "4.13.1"
-        },
-        {
-            "name": "pycparser",
-            "version": "2.21"
-        },
-        {
-            "name": "pydantic",
-            "version": "2.6.2"
-        },
-        {
-            "name": "pydantic_core",
-            "version": "2.16.3"
-        },
-        {
-            "name": "pyelftools",
-            "version": "0.31"
-        },
-        {
-            "name": "Pygments",
-            "version": "2.17.2"
-        },
-        {
-            "name": "pymongo",
-            "version": "4.11.1"
-        },
-        {
-            "name": "PyNaCl",
-            "version": "1.5.0"
-        },
-        {
-            "name": "pyparsing",
-            "version": "3.1.1"
-        },
-        {
-            "name": "pyserial",
-            "version": "3.5"
-        },
-        {
-            "name": "PySocks",
-            "version": "1.7.1"
-        },
-        {
-            "name": "python-dateutil",
-            "version": "2.8.2"
-        },
-        {
-            "name": "python-json-logger",
-            "version": "2.0.7"
-        },
-        {
-            "name": "pytils",
-            "version": "0.4.1"
-        },
-        {
-            "name": "pytz",
-            "version": "2024.1"
-        },
-        {
-            "name": "pyvelociraptor",
-            "version": "0.1.9"
-        },
-        {
-            "name": "pywin32",
-            "version": "306"
-        },
-        {
-            "name": "pywinpty",
-            "version": "2.0.12"
-        },
-        {
-            "name": "PyYAML",
-            "version": "6.0.1"
-        },
-        {
-            "name": "pyzmq",
-            "version": "25.1.2"
-        },
-        {
-            "name": "qtconsole",
-            "version": "5.5.1"
-        },
-        {
-            "name": "QtPy",
-            "version": "2.4.1"
-        },
-        {
-            "name": "referencing",
-            "version": "0.33.0"
-        },
-        {
-            "name": "requests",
-            "version": "2.31.0"
-        },
-        {
-            "name": "rfc3339-validator",
-            "version": "0.1.4"
-        },
-        {
-            "name": "rfc3986-validator",
-            "version": "0.1.1"
-        },
-        {
-            "name": "ROPGadget",
-            "version": "7.5"
-        },
-        {
-            "name": "rpds-py",
-            "version": "0.17.1"
-        },
-        {
-            "name": "rpyc",
-            "version": "6.0.1"
-        },
-        {
-            "name": "Send2Trash",
-            "version": "1.8.2"
-        },
-        {
-            "name": "simplejson",
-            "version": "3.19.2"
-        },
-        {
-            "name": "six",
-            "version": "1.16.0"
-        },
-        {
-            "name": "sniffio",
-            "version": "1.3.0"
-        },
-        {
-            "name": "sortedcontainers",
-            "version": "2.4.0"
-        },
-        {
-            "name": "soupsieve",
-            "version": "2.5"
-        },
-        {
-            "name": "SQLAlchemy",
-            "version": "2.0.27"
-        },
-        {
-            "name": "stack-data",
-            "version": "0.6.3"
-        },
-        {
-            "name": "style",
-            "version": "1.1.0"
-        },
-        {
-            "name": "tempora",
-            "version": "5.5.1"
-        },
-        {
-            "name": "terminado",
-            "version": "0.18.0"
-        },
-        {
-            "name": "tinycss2",
-            "version": "1.2.1"
-        },
-        {
-            "name": "tools",
-            "version": "0.1.9"
-        },
-        {
-            "name": "tornado",
-            "version": "6.4"
-        },
-        {
-            "name": "traitlets",
-            "version": "5.14.1"
-        },
-        {
-            "name": "types-python-dateutil",
-            "version": "2.8.19.20240106"
-        },
-        {
-            "name": "typing_extensions",
-            "version": "4.9.0"
-        },
-        {
-            "name": "unicorn",
-            "version": "2.1.1"
-        },
-        {
-            "name": "unix-ar",
-            "version": "0.2.1"
-        },
-        {
-            "name": "update",
-            "version": "0.0.1"
-        },
-        {
-            "name": "uri-template",
-            "version": "1.3.0"
-        },
-        {
-            "name": "urllib3",
-            "version": "2.2.0"
-        },
-        {
-            "name": "wcwidth",
-            "version": "0.2.13"
-        },
-        {
-            "name": "web.py",
-            "version": "0.62"
-        },
-        {
-            "name": "webcolors",
-            "version": "1.13"
-        },
-        {
-            "name": "webencodings",
-            "version": "0.5.1"
-        },
-        {
-            "name": "websocket-client",
-            "version": "1.7.0"
-        },
-        {
-            "name": "Werkzeug",
-            "version": "3.0.1"
-        },
-        {
-            "name": "widgetsnbextension",
-            "version": "4.0.9"
-        },
-        {
-            "name": "zc.lockfile",
-            "version": "3.0.post1"
-        },
-        {
-            "name": "zstandard",
-            "version": "0.23.0"
-        }
-    ],
+    "node_version": {
+        "name": "node",
+        "version": "16.14.2"
+    },
     "npm_packages": [
         {
-            "name": "@nestjs/cli",
-            "version": "11.0.3"
-        },
-        {
-            "name": "npm-check-updates",
-            "version": "16.14.20"
+            "name": "corepack",
+            "version": "0.10.0"
         },
         {
             "name": "npm",
-            "version": "10.7.0"
-        },
-        {
-            "name": "react-native-cli",
-            "version": "2.0.1"
-        },
-        {
-            "name": "truffle",
-            "version": "5.11.5"
+            "version": "8.19.0"
         }
     ],
     "installed_apps": [
+        {
+            "name": "PowerToys (Preview)",
+            "version": "0.87.1"
+        },
         {
             "name": "osquery",
             "version": "5.15.0"
         },
         {
+            "name": "ILSpy",
+            "version": "9.1.0.7988"
+        },
+        {
             "name": "Microsoft Teams Meeting Add-in for Microsoft Office",
-            "version": "1.25.06502"
+            "version": "1.24.31301"
         },
         {
             "name": "Office 16 Click-to-Run Extensibility Component",
             "version": "16.0.18623.20156"
         },
         {
-            "name": "Office 16 Click-to-Run Localization Component",
-            "version": "16.0.12527.20482"
-        },
-        {
             "name": "Office 16 Click-to-Run Licensing Component",
             "version": "16.0.18623.20208"
         },
         {
-            "name": "OpenVPN 2.6.12-I001 amd64",
-            "version": "2.6.1201"
+            "name": "ASUS Aura SDK",
+            "version": "3.05.04"
         },
         {
-            "name": "Node.js",
-            "version": "22.11.0"
+            "name": "AMD Ryzen Balanced Driver",
+            "version": "7.0.4.10"
         },
         {
             "name": "Microsoft Visual Studio Setup WMI Provider",
             "version": "3.12.2140.44225"
         },
         {
-            "name": "ENE RGB HAL",
-            "version": "1.0.21.0"
+            "name": "Microsoft .NET AppHost Pack - 8.0.15 (x64)",
+            "version": "64.60.31149"
         },
         {
-            "name": "Microsoft .NET Runtime - 6.0.27 (x64)",
-            "version": "48.108.8828"
+            "name": "Microsoft Windows Desktop Runtime - 8.0.15 (x64)",
+            "version": "64.60.31203"
+        },
+        {
+            "name": "Python 3.12.0 Standard Library (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "ClickOnce Bootstrapper Package for Microsoft .NET Framework",
+            "version": "4.8.09256"
+        },
+        {
+            "name": "vs_BlendMsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.Maui.Manifest-9.0.100 (x64)",
+            "version": "9.0.14"
+        },
+        {
+            "name": "VMware Player",
+            "version": "16.2.5"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 8.0.12 (x86)",
+            "version": "64.48.26178"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 8.0.11 (x64)",
+            "version": "64.44.23253"
+        },
+        {
+            "name": "vs_communityx64msi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET Core AppHost Pack - 3.1.32 (x64)",
+            "version": "24.192.31915"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.Maui.Manifest-8.0.100 (x64)",
+            "version": "8.0.3"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 8.0.12 Targeting Pack (x86)",
+            "version": "8.0.12.24603"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 8.0.11 (x64)",
+            "version": "64.44.23191"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 9.0.1 (x64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft .NET Core AppHost Pack - 3.1.32 (x64_arm64)",
+            "version": "24.192.31915"
+        },
+        {
+            "name": "Microsoft .NET SDK 9.0.102 (x64) from Visual Studio",
+            "version": "9.1.224.61103"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.Maui.Manifest-6.0.300",
+            "version": "24.78.0"
+        },
+        {
+            "name": "Microsoft .NET Framework 4.8 Targeting Pack",
+            "version": "4.8.03761"
+        },
+        {
+            "name": "Microsoft .NET Host - 6.0.35 (x64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.net6.Manifest (x64)",
+            "version": "64.60.31025"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 9.0.1 (x64_x86)",
+            "version": "72.4.26282"
         },
         {
             "name": "Microsoft Visual C++ 2013 x86 Minimum Runtime - 12.0.40664",
             "version": "12.0.40664"
         },
         {
-            "name": "OptaneDowngradeGuard",
-            "version": "18.0.0.0"
+            "name": "Microsoft .NET 6.0 Templates 6.0.427 (x64)",
+            "version": "24.8.55382"
         },
         {
-            "name": "Python 3.12.6 pip Bootstrap (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft .NET Host FX Resolver - 6.0.35 (x64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "RyzenMasterSDK",
+            "version": "1.2.3.5"
+        },
+        {
+            "name": "vcpp_crt.redist.clickonce",
+            "version": "14.42.34433"
         },
         {
             "name": "Microsoft Visual C++ 2022 X86 Additional Runtime - 14.42.34433",
             "version": "14.42.34433"
         },
         {
-            "name": "Vagrant VMware Utility",
-            "version": "1.0.22"
+            "name": "Microsoft .NET Core AppHost Pack - 3.1.32 (x64_x86)",
+            "version": "24.192.31915"
         },
         {
-            "name": "Python 3.12.6 Development Libraries (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "icecap_collectionresourcesx64",
+            "version": "17.12.35410"
         },
         {
-            "name": "Python 3.12.6 Test Suite (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft .NET Host - 6.0.35 (x86)",
+            "version": "48.140.21458"
         },
         {
-            "name": "Python 3.12.6 Documentation (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft ASP.NET Core 6.0.35 Targeting Pack (x64)",
+            "version": "6.0.35.24462"
         },
         {
-            "name": "Python Launcher",
-            "version": "3.12.6150.0"
+            "name": "Microsoft.NET.Sdk.Android.Manifest-6.0.300",
+            "version": "128.75.16384"
         },
         {
-            "name": "Microsoft GameInput",
-            "version": "10.1.22621.3036"
+            "name": "Microsoft .NET Targeting Pack - 9.0.1 (x86)",
+            "version": "72.4.26282"
         },
         {
-            "name": "ENE_DRAM_RGB_AIO",
-            "version": "1.0.3.31"
+            "name": "Microsoft .NET Core Host FX Resolver - 3.1.32 (x64)",
+            "version": "24.192.31915"
         },
         {
-            "name": "Python 3.12.6 Standard Library (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft .NET Runtime - 6.0.16 (x64)",
+            "version": "48.67.58427"
+        },
+        {
+            "name": "vs_devenvsharedmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "IntelliTraceProfilerProxy",
+            "version": "15.0.21225.01"
+        },
+        {
+            "name": "Microsoft .NET Core Runtime - 3.1.32 (x64)",
+            "version": "24.192.31915"
+        },
+        {
+            "name": "Microsoft .NET Core AppHost Pack - 3.1.32 (x64_arm)",
+            "version": "24.192.31915"
+        },
+        {
+            "name": "Microsoft .NET Core 3.1 Templates 3.1.426 (x64)",
+            "version": "3.1.33.016244"
+        },
+        {
+            "name": "Microsoft .NET Toolset 9.0.102 (x64)",
+            "version": "36.8.36815"
+        },
+        {
+            "name": "VS Script Debugging Common",
+            "version": "17.0.157.0"
+        },
+        {
+            "name": "Microsoft Web Deploy 4.0",
+            "version": "10.0.8305"
+        },
+        {
+            "name": "Microsoft .NET Targeting Pack - 8.0.12 (x86)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "vs_FileTracker_Singleton",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET Framework 4.7.2 Targeting Pack (ENU)",
+            "version": "4.7.03062"
+        },
+        {
+            "name": "Microsoft .NET 8.0 Templates 8.0.405 (x64)",
+            "version": "32.11.36120"
+        },
+        {
+            "name": "Microsoft ASP.NET Core Module for IIS Express",
+            "version": "12.2.18292.0"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 8.0.15 (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 8.0.12 Shared Framework (x86)",
+            "version": "8.0.12.24603"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.net6.Manifest (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "Microsoft .NET Core Host - 3.1.32 (x64)",
+            "version": "24.192.31915"
+        },
+        {
+            "name": "Microsoft .NET 8.0 Templates 8.0.408 (x64)",
+            "version": "32.11.59749"
         },
         {
             "name": "Microsoft Visual C++ 2013 x64 Minimum Runtime - 12.0.40664",
             "version": "12.0.40664"
         },
         {
-            "name": "Microsoft .NET Host FX Resolver - 6.0.27 (x64)",
-            "version": "48.108.8828"
+            "name": "vs_clickoncesigntoolmsi",
+            "version": "17.12.35410"
         },
         {
-            "name": "MongoDB 8.0.4 2008R2Plus SSL (64 bit)",
-            "version": "8.0.4"
+            "name": "AURA lighting effect add-on x64",
+            "version": "0.0.45"
         },
         {
-            "name": "Java 8 Update 411 (64-bit)",
-            "version": "8.0.4110.9"
+            "name": "Microsoft.NET.Sdk.Aspire.Manifest-8.0.100 (x64)",
+            "version": "64.136.23253"
         },
         {
-            "name": "Java 8 Update 291 (64-bit)",
-            "version": "8.0.2910.10"
+            "name": "Microsoft .NET Targeting Pack - 8.0.12 (x64)",
+            "version": "64.48.26165"
         },
         {
-            "name": "Java SE Development Kit 8 Update 291 (64-bit)",
-            "version": "8.0.2910.10"
+            "name": "Java(TM) SE Development Kit 21.0.5 (64-bit)",
+            "version": "21.0.5.0"
         },
         {
-            "name": "WD_BLACK AN1500",
-            "version": "1.0.12.0"
+            "name": "Microsoft.NET.Sdk.tvOS.Manifest-9.0.100 (x64)",
+            "version": "18.1.9163"
         },
         {
-            "name": "Python 3.12.6 Executables (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft.NET.Workload.Emscripten.net8.Manifest (x64)",
+            "version": "72.44.26179"
         },
         {
-            "name": "Microsoft Windows Desktop Runtime - 6.0.27 (x64)",
-            "version": "48.108.8836"
+            "name": "AMD Settings",
+            "version": "2022.0428.0341.6645"
         },
         {
-            "name": "WD_BLACK D50",
-            "version": "1.0.9.0"
+            "name": "Microsoft ASP.NET Core 6.0.35 Shared Framework (x64)",
+            "version": "6.0.35.24462"
         },
         {
-            "name": "Python 3.12.6 Add to Path (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Epic Games Launcher Prerequisites (x64)",
+            "version": "1.0.0.0"
         },
         {
-            "name": "Safe Exam Browser (x64)",
-            "version": "3.7.0.682"
+            "name": "Microsoft Windows Desktop Targeting Pack - 8.0.12 (x64)",
+            "version": "64.48.26178"
+        },
+        {
+            "name": "vs_filehandler_amd64",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET Targeting Pack - 8.0.15 (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "Java 8 Update 421",
+            "version": "8.0.4210.9"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 8.0.15 (x64_arm64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "vs_communitymsires",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 8.0.12 (x86)",
+            "version": "64.48.26178"
+        },
+        {
+            "name": "Microsoft .NET Framework 4.8 SDK",
+            "version": "4.8.03928"
+        },
+        {
+            "name": "Python 2.7.11 (64-bit)",
+            "version": "2.7.11150"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.Current.Manifest (x64)",
+            "version": "64.60.31025"
+        },
+        {
+            "name": "vs_minshellinteropsharedmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "vs_githubprotocolhandlermsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.iOS.Manifest-8.0.100 (x64)",
+            "version": "17.0.8478"
+        },
+        {
+            "name": "EA app",
+            "version": "13.128.0.5641"
+        },
+        {
+            "name": "Python Launcher",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "vs_communitysharedmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 9.0.1 (x64)",
+            "version": "72.4.26276"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 9.0.1 (x86)",
+            "version": "72.4.26276"
+        },
+        {
+            "name": "Microsoft .NET Framework 4.8 Targeting Pack (ENU)",
+            "version": "4.8.03761"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.net7.Manifest (x64)",
+            "version": "64.60.31025"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 9.0.1 (x86)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft .NET Targeting Pack - 6.0.35 (x64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft .NET Toolset 8.0.408 (x64)",
+            "version": "32.11.26981"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.Aspire.Manifest-8.0.100 (x64)",
+            "version": "64.0.5426"
+        },
+        {
+            "name": "vs_devenx64vmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Oracle VM VirtualBox 7.0.22",
+            "version": "7.0.22"
         },
         {
             "name": "Microsoft Visual C++ 2022 X64 Minimum Runtime - 14.42.34433",
             "version": "14.42.34433"
         },
         {
+            "name": "Microsoft .NET AppHost Pack - 6.0.35 (x64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 9.0.1 Shared Framework (x86)",
+            "version": "9.0.1.24610"
+        },
+        {
+            "name": "IIS 10.0 Express",
+            "version": "10.0.08608"
+        },
+        {
+            "name": "ROG Live Service",
+            "version": "3.0.19.0"
+        },
+        {
+            "name": "Microsoft .NET 9.0 Templates 9.0.102 (x64)",
+            "version": "36.8.53199"
+        },
+        {
             "name": "Microsoft Visual C++ 2022 X64 Additional Runtime - 14.42.34433",
             "version": "14.42.34433"
         },
         {
-            "name": "Microsoft Build of OpenJDK with Hotspot 17.0.10+7 (x64)",
-            "version": "17.0.10.7"
+            "name": "Microsoft Windows Desktop Runtime - 8.0.12 (x64)",
+            "version": "64.48.26178"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 8.0.15 (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "AMD_Chipset_Drivers",
+            "version": "4.06.10.651"
+        },
+        {
+            "name": "vs_vswebprotocolselectormsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 3.1.10 Targeting Pack (x64)",
+            "version": "3.1.10.20520"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 6.0.35 (x86)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft ASP.NET Core Module V2 for IIS Express",
+            "version": "17.0.22116.0"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.macOS.Manifest-8.0.100 (x64)",
+            "version": "14.0.8478"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.Manifest",
+            "version": "48.3.40665"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 8.0.15 Shared Framework (x64)",
+            "version": "8.0.15.25165"
+        },
+        {
+            "name": "Python 3.12.0 Test Suite (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 9.0.1 (x64)",
+            "version": "72.4.26276"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 8.0.15 (x64)",
+            "version": "64.60.31203"
         },
         {
             "name": "Microsoft Visual C++ 2012 x64 Additional Runtime - 11.0.61030",
             "version": "11.0.61030"
         },
         {
-            "name": "Autopsy",
-            "version": "4.21.0"
+            "name": "Microsoft .NET Core Targeting Pack - 3.1.0 (x64)",
+            "version": "24.64.28315"
         },
         {
-            "name": "Vagrant",
-            "version": "2.4.1"
+            "name": "vs_clickoncebootstrappermsires",
+            "version": "17.12.35410"
         },
         {
-            "name": "VMware Workstation",
-            "version": "17.6.2"
+            "name": "Windows PC Health Check",
+            "version": "3.6.2204.08001"
         },
         {
-            "name": "Intel(R) Chipset Device Software",
-            "version": "10.1.18383.8213"
+            "name": "vs_minshellx64msi",
+            "version": "17.12.35410"
         },
         {
-            "name": "Go Programming Language amd64 go1.24.2",
-            "version": "1.24.2"
+            "name": "Microsoft .NET AppHost Pack - 6.0.35 (x64_arm)",
+            "version": "48.140.21458"
         },
         {
-            "name": "MSI NBFoundation Service",
-            "version": "1.0.2111.1501"
+            "name": "Microsoft Command Line Utilities 15 for SQL Server",
+            "version": "15.0.1300.359"
         },
         {
-            "name": "vs_FileTracker_Singleton",
-            "version": "17.13.35716"
+            "name": "Microsoft.NET.Sdk.Android.Manifest-9.0.100 (x64)",
+            "version": "35.0.7"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.Manifest (x64)",
+            "version": "48.140.20194"
+        },
+        {
+            "name": "vs_minshellinteropx64msi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft SQL Server 2019 LocalDB",
+            "version": "15.0.4382.1"
+        },
+        {
+            "name": "AMD WVR64",
+            "version": "1.0.2"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 6.0.35 (x86)",
+            "version": "48.140.21525"
+        },
+        {
+            "name": "AMD PSP Driver",
+            "version": "5.19.0.0"
+        },
+        {
+            "name": "Cloudflare WARP",
+            "version": "25.2.664.0"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 8.0.12 Targeting Pack (x64)",
+            "version": "8.0.12.24603"
+        },
+        {
+            "name": "IntelliTraceProfilerProxy",
+            "version": "15.0.21225.01"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.MacCatalyst.Manifest-6.0.300",
+            "version": "125.191.42208"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 9.0.1 (x64_arm64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Python 3.12.0 Documentation (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.tvOS.Manifest-8.0.100 (x64)",
+            "version": "17.0.8478"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.macOS.Manifest-9.0.100 (x64)",
+            "version": "15.1.9163"
+        },
+        {
+            "name": "AMD DVR64",
+            "version": "1.0.2"
+        },
+        {
+            "name": "Microsoft .NET Host - 8.0.15 (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "ASUS Update Helper",
+            "version": "1.3.107.131"
+        },
+        {
+            "name": "vs_minshellmsires",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 8.0.12 (x64_arm64)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.net6.Manifest (x64)",
+            "version": "72.44.26179"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 8.0.12 (x64)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.macOS.Manifest-6.0.300",
+            "version": "100.255.42208"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 6.0.35 (x64)",
+            "version": "48.140.21525"
+        },
+        {
+            "name": "AMD I2C Driver",
+            "version": "1.2.0.119"
+        },
+        {
+            "name": "Node.js",
+            "version": "20.12.2"
+        },
+        {
+            "name": "Python 3.12.0 Core Interpreter (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.Android.Manifest-8.0.100 (x64)",
+            "version": "34.0.43"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.net7.Manifest (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "VS JIT Debugger",
+            "version": "17.0.157.0"
+        },
+        {
+            "name": "vs_filehandler_x86",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET Framework Cumulative Intellisense Pack for Visual Studio (ENU)",
+            "version": "4.8.09037"
+        },
+        {
+            "name": "Microsoft ASP.NET Diagnostic Pack for Visual Studio",
+            "version": "17.12.178.10385"
         },
         {
             "name": "AccessData FTK Imager",
             "version": "4.7.1.2"
         },
         {
-            "name": "ENE_MousePad_HAL",
-            "version": "1.0.2.0"
+            "name": "Microsoft ASP.NET Core 8.0.12 Shared Framework (x64)",
+            "version": "8.0.12.24603"
+        },
+        {
+            "name": "vs_minshellsharedmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 8.0.12 (x64_x86)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.net7.Manifest (x64)",
+            "version": "72.0.26282"
+        },
+        {
+            "name": "VS Immersive Activate Helper",
+            "version": "17.0.157.0"
         },
         {
             "name": "Microsoft Visual C++ 2022 X86 Minimum Runtime - 14.42.34433",
@@ -891,76 +693,320 @@
             "version": "3.12.2140.44225"
         },
         {
+            "name": "Teams Machine-Wide Installer",
+            "version": "1.5.0.8070"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 6.0.35 (x64_x86)",
+            "version": "48.140.21458"
+        },
+        {
             "name": "Microsoft Visual C++ 2013 x64 Additional Runtime - 12.0.40664",
             "version": "12.0.40664"
         },
         {
-            "name": "Velociraptor",
-            "version": "0.73.4"
+            "name": "Microsoft TestPlatform SDK Local Feed",
+            "version": "17.10.0.9037153"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.MacCatalyst.Manifest-8.0.100 (x64)",
+            "version": "17.0.8478"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 6.0.16 (x64)",
+            "version": "48.67.58427"
+        },
+        {
+            "name": "Python 3.12.0 Add to Path (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.Current.Manifest (x64)",
+            "version": "72.0.26282"
+        },
+        {
+            "name": "AURA lighting effect add-on",
+            "version": "0.0.45"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.net8.Manifest (x64)",
+            "version": "72.0.26282"
+        },
+        {
+            "name": "vs_clickoncebootstrappermsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Epic Online Services",
+            "version": "2.0.44.0"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 6.0.35 (x64_arm64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Python 3.12.0 Executables (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft System CLR Types for SQL Server 2019",
+            "version": "15.0.2000.5"
+        },
+        {
+            "name": "Microsoft .NET Standard Targeting Pack - 2.1.0 (x64)",
+            "version": "24.0.28113"
         },
         {
             "name": "Microsoft Visual C++ 2012 x86 Additional Runtime - 11.0.61030",
             "version": "11.0.61030"
         },
         {
-            "name": "Python 3.12.6 Core Interpreter (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "Microsoft .NET AppHost Pack - 8.0.15 (x64_x86)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "Python 3.12.0 Development Libraries (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 3.1.0 (x64)",
+            "version": "24.64.28315"
         },
         {
             "name": "Microsoft Visual C++ 2012 x64 Minimum Runtime - 11.0.61030",
             "version": "11.0.61030"
         },
         {
-            "name": "Java(TM) SE Development Kit 21.0.2 (64-bit)",
-            "version": "21.0.2.0"
+            "name": "Microsoft .NET AppHost Pack - 9.0.1 (x64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "vs_tipsmsi",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft Windows Desktop Targeting Pack - 6.0.35 (x64)",
+            "version": "48.140.21525"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 9.0.1 (x86)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft ODBC Driver 17 for SQL Server",
+            "version": "17.10.6.1"
+        },
+        {
+            "name": "Branding64",
+            "version": "1.00.0008"
+        },
+        {
+            "name": "Microsoft .NET Host FX Resolver - 9.0.1 (x64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 6.0.35 (x64)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.iOS.Manifest-6.0.300",
+            "version": "125.191.42208"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 8.0.15 Targeting Pack (x64)",
+            "version": "8.0.15.25165"
         },
         {
             "name": "Microsoft Visual C++ 2013 x86 Additional Runtime - 12.0.40664",
             "version": "12.0.40664"
         },
         {
-            "name": "Python 3.12.6 Tcl/Tk Support (64-bit)",
-            "version": "3.12.6150.0"
+            "name": "icecap_collection_neutral",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.net7.Manifest (x64)",
+            "version": "72.44.26179"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.MacCatalyst.Manifest-9.0.100 (x64)",
+            "version": "18.1.9163"
+        },
+        {
+            "name": "Microsoft .NET AppHost Pack - 8.0.12 (x64)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "AMD SBxxx SMBus Driver",
+            "version": "5.12.0.38"
+        },
+        {
+            "name": "Microsoft Windows Desktop Runtime - 9.0.1 (x86)",
+            "version": "72.4.26276"
+        },
+        {
+            "name": "AURA Service",
+            "version": "3.08.09"
+        },
+        {
+            "name": "Python 3.12.0 pip Bootstrap (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "GameSDK Service",
+            "version": "1.0.5.0"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 9.0.1 Shared Framework (x64)",
+            "version": "9.0.1.24610"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 6.0.35 (x86)",
+            "version": "48.140.21458"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.Current.Manifest (x64)",
+            "version": "64.60.31149"
+        },
+        {
+            "name": "Microsoft .NET Framework 4.7.2 Targeting Pack",
+            "version": "4.7.03062"
         },
         {
             "name": "Microsoft Visual C++ 2012 x86 Minimum Runtime - 11.0.61030",
             "version": "11.0.61030"
         },
         {
-            "name": "ENE IO Driver",
-            "version": "3.3.0"
+            "name": "Java(TM) SE Development Kit 11.0.18 (64-bit)",
+            "version": "11.0.18.0"
+        },
+        {
+            "name": "vs_CoreEditorFonts",
+            "version": "17.7.40001"
+        },
+        {
+            "name": "Microsoft JDK with Hotspot 17.0.11+9 (x64)",
+            "version": "17.0.11.9"
         },
         {
             "name": "Microsoft Update Health Tools",
             "version": "5.72.0.0"
         },
         {
-            "name": "Microsoft .NET Host - 6.0.27 (x64)",
-            "version": "48.108.8828"
+            "name": "vs_SQLClickOnceBootstrappermsi",
+            "version": "17.12.35410"
         },
         {
-            "name": "RstDowngradeGuard",
-            "version": "18.0.0.0"
+            "name": "ASUS Ambient HAL",
+            "version": "5.7.0.0"
         },
         {
-            "name": "ENE_X-JMI_HAL",
-            "version": "1.0.5.1"
+            "name": "Microsoft.NET.Sdk.iOS.Manifest-9.0.100 (x64)",
+            "version": "18.1.9163"
         },
         {
-            "name": "Java Auto Updater",
-            "version": "2.8.411.9"
+            "name": "Microsoft .NET Runtime - 8.0.11 (x64)",
+            "version": "64.44.23191"
         },
         {
-            "name": "ENE_EHD_M2_HAL",
-            "version": "1.0.9.10"
+            "name": "AWS Command Line Interface v2",
+            "version": "2.25.4.0"
         },
         {
-            "name": "Python 2.7.18 (64-bit)",
-            "version": "2.7.18150"
+            "name": "Microsoft Windows Desktop Runtime - 3.1.32 (x64)",
+            "version": "24.192.31915"
         },
         {
             "name": "Windows Subsystem for Linux",
-            "version": "2.1.5.0"
+            "version": "2.4.13.0"
+        },
+        {
+            "name": "Epic Games Launcher",
+            "version": "1.3.93.0"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 9.0.1 Targeting Pack (x86)",
+            "version": "9.0.1.24610"
+        },
+        {
+            "name": "Python 3.12.0 Tcl/Tk Support (64-bit)",
+            "version": "3.12.150.0"
+        },
+        {
+            "name": "Microsoft .NET Core Toolset 3.1.426 (x64)",
+            "version": "12.22.49012"
+        },
+        {
+            "name": "Java(TM) SE Development Kit 17.0.12 (64-bit)",
+            "version": "17.0.12.0"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 3.1.32 Shared Framework (x64)",
+            "version": "3.1.32.22566"
+        },
+        {
+            "name": "Microsoft .NET Host - 9.0.1 (x86)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft .NET Targeting Pack - 9.0.1 (x64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "Microsoft ASP.NET Core 9.0.1 Targeting Pack (x64)",
+            "version": "9.0.1.24610"
+        },
+        {
+            "name": "WireGuard",
+            "version": "0.5.3"
+        },
+        {
+            "name": "Microsoft .NET Toolset 6.0.427 (x64)",
+            "version": "24.14.55382"
+        },
+        {
+            "name": "Microsoft Visual C++ 2008 Redistributable - x64 9.0.30729.17",
+            "version": "9.0.30729"
+        },
+        {
+            "name": "Microsoft.NET.Sdk.tvOS.Manifest-6.0.300",
+            "version": "125.191.42208"
+        },
+        {
+            "name": "Java Auto Updater",
+            "version": "2.8.421.9"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Mono.Toolchain.net6.Manifest (x64)",
+            "version": "72.0.26282"
+        },
+        {
+            "name": "icecap_collection_x64",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft .NET Host - 9.0.1 (x64)",
+            "version": "72.4.26282"
+        },
+        {
+            "name": "AMD GPIO2 Driver",
+            "version": "2.2.0.130"
+        },
+        {
+            "name": "icecap_collectionresources",
+            "version": "17.12.35410"
+        },
+        {
+            "name": "Microsoft.NET.Workload.Emscripten.Current.Manifest (x64)",
+            "version": "72.44.26179"
+        },
+        {
+            "name": "Microsoft .NET Runtime - 8.0.12 (x86)",
+            "version": "64.48.26165"
+        },
+        {
+            "name": "DiagnosticsHub_CollectionService",
+            "version": "17.12.35318"
         }
     ]
 }
