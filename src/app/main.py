@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify
-from scanner.main_scanner import run_scan_with_progress
+import scanner.main_scanner as main_scanner
 import os
 import api.main_api as main_api
 import json
@@ -17,11 +17,10 @@ def home():
 def scan():
     app.logger.debug("scanning")
     try:
-        scan_results = run_scan_with_progress()
+        scan_results = main_scanner.main()
         
         # Convert dict to JSON string before passing to main_api
-        json_results = json.dumps(scan_results)
-        mitigation_results = main_api.main(json_results)
+        mitigation_results = main_api.main()
 
         app.logger.debug("done!")
         return render_template('result.html', results=mitigation_results)
