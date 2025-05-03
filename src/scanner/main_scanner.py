@@ -12,16 +12,9 @@ def run_scan_with_progress():
         scan_thread.start()
 
         # Monitor progress while scan is running
-        old_progress = 0
-        start_time = time.time()
         while scan_thread.is_alive():
             progress = (total_data["completed"] / total_data["total"]) * 100 if total_data["total"] > 0 else 0
-            
-            if(progress == old_progress):
-                continue
-            else:
-                print(f"Scan progress: {progress:.1f}%")
-                old_progress = progress
+            print(f"Scan progress: {progress:.1f}%")
             time.sleep(0.5)
         end_time = time.time()
         elapsed_time = end_time - start_time
@@ -32,39 +25,40 @@ def run_scan_with_progress():
 
         # Get the results (already parsed in data_extractor.py)
         results = total_data["data"]
+
         if not results:
             raise Exception("No data collected during scan")
-        
         return results
+    
     except Exception as e:
         print(f"Error in scan process: {str(e)}")
         return {"error": str(e)}
 
-# def main():
-#     results = run_scan_with_progress()
+def main():
+    return run_scan_with_progress()
 
-if __name__ == "__main__":
-    print("Starting system scan...")
+# if __name__ == "__main__":
+#     print("Starting system scan...")
     
-    try:
-        # Run the scan with progress monitoring
-        results = run_scan_with_progress()
+#     try:
+#         # Run the scan with progress monitoring
+#         results = run_scan_with_progress()
         
-        # report = main_api.main(results)
+#         # report = main_api.main(results)
 
-        # Create output directory if it doesn't exist
-        output_dir = os.path.join(os.path.dirname(__file__), "output")
-        os.makedirs(output_dir, exist_ok=True)
+#         # Create output directory if it doesn't exist
+#         output_dir = os.path.join(os.path.dirname(__file__), "output")
+#         os.makedirs(output_dir, exist_ok=True)
         
-        # Save both raw and parsed results
-        parsed_output_file = os.path.join(output_dir, "parsed_scan_results.json")
+#         # Save both raw and parsed results
+#         parsed_output_file = os.path.join(output_dir, "parsed_scan_results.json")
             
-        # Save parsed results
-        with open(parsed_output_file, "w") as f:
-            json.dump(results, f, indent=4)
+#         # Save parsed results
+#         with open(parsed_output_file, "w") as f:
+#             json.dump(results, f, indent=4)
             
-        print(f"\nScan complete!")
-        print(f"Parsed results saved to: {parsed_output_file}")
+#         print(f"\nScan complete!")
+#         print(f"Parsed results saved to: {parsed_output_file}")
         
-    except Exception as e:
-        print(f"Error during scan: {str(e)}")
+#     except Exception as e:
+#         print(f"Error during scan: {str(e)}")
