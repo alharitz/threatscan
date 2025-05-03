@@ -5,6 +5,7 @@ from .parser import parse_scan_results
 import os
 import api.main_api as main_api
 import json
+import time
 
 app = Flask(
     __name__,
@@ -19,8 +20,12 @@ def home():
 def scan():
     app.logger.debug("scanning")
     try:
+        start_time = time.time()
         raw_results = run_scan()
-        app.logger.debug("parsing results")
+        end_time = time.time()
+        total_time = start_time - end_time
+        app.logger.debug(f"Scan time: {total_time}")
+        app.logger.debug("Parsing results")
         
         parsed_results = parse_scan_results(raw_results)
         
