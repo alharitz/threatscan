@@ -1,10 +1,9 @@
 from flask import Flask, render_template, jsonify
-from .scanner import run_scan
-from .parser import parse_scan_results
-
+import scanner.main_scanner as main_scanner
 import os
 import api.main_api as main_api
 import json
+import time
 
 app = Flask(
     __name__,
@@ -19,18 +18,15 @@ def home():
 def scan():
     app.logger.debug("scanning")
     try:
-        raw_results = run_scan()
-        app.logger.debug("parsing results")
+        start_time = time.time()
+        scan_results = main_scanner.main()
+        end_time = time.time()
+        total_time = start_time - end_time
+        app.logger.debug(f"Scan time: {total_time}")
+        app.logger.debug("Parsing results")
         
-        parsed_results = parse_scan_results(raw_results)
-        
-        # return render_template('scan.html', results=parsed_results)
-
-        app.logger.debug("getting mitigation")
-        with open("scan_results.json", "w") as f:
-            json.dump(parsed_results, f, indent=2)
-        
-        mitigation_results = main_api.main(parsed_results)
+        # Convert dict to JSON string before passing to main_api
+        mitigation_results = main_api.main(scan_results)
 
         app.logger.debug("done!")
         return render_template('result.html', results=mitigation_results)
@@ -50,4 +46,4 @@ def detail():
     return render_template('detail.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)         
+    app.run(debug=True)

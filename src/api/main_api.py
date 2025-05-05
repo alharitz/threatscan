@@ -7,9 +7,17 @@ import json
 import os
 import api.llm_api as llm_api
 
+
+api_key = os.getenv('NVD_API_KEY')
+if not api_key:
+    raise ValueError("NVD_API_KEY environment variable not set")
+
 def get_cpes(name, version):
     url = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
-    headers = {"Accept": "application/json"}
+    headers = {
+        "apiKey": api_key,
+        "Accept": "application/json"
+    }
     
     # Vendor mapping for common software
     # TODO: add vendor mapping
@@ -27,6 +35,9 @@ def get_cpes(name, version):
 
     try:
         response = requests.get(url, headers=headers, params=params, timeout=15)
+        if response.status_code == 404:
+            print(f"No CPE data found for {name} {version}")
+            return []
         response.raise_for_status()
         data = response.json()
         
@@ -44,12 +55,12 @@ def get_cpes(name, version):
         return []
 
 def get_cves(cpe):
-    url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
-    params = {"cpeName": cpe}
-    
+    url = "https://services.nvd.nist.gov/rest/json/cves/2.0/"
+    params = {
+        "cpeName": cpe
+    }    
     try:
-        # NVD rate limits (5 requests/30 seconds)
-        time.sleep(6)
+        time.sleep(6)  # NVD API has rate limits of 5 requests/30 seconds
         response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         return response.json().get("vulnerabilities", [])
@@ -62,7 +73,8 @@ def process_result(result):
 
     for key, value in result.items():
         try:
-            parsed_value = json.loads(value)  # Try parsing each value
+            # parsed_value = json.loads(value)
+            parsed_value = value
         except json.JSONDecodeError:
             print(f"Skipping {key}, not a JSON structure.")
             continue
@@ -77,18 +89,10 @@ def process_result(result):
                 if name and version:
                     software_list.append({"name": name, "version": version})
         
-        # If it's a dict (like OS info)
-        elif isinstance(parsed_value, dict):
-            name = parsed_value.get("Caption") or key  # Use Caption if available
-            version = parsed_value.get("Version")
-            if name and version:
-                software_list.append({"name": name, "version": version})
-
-    print(f"\nFinal software list: {software_list}")
+    # print(f"\nFinal software list: {software_list}")
     return software_list
 
 def main(result):
-    
     software_list = process_result(result)
     results = {}
     
