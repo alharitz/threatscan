@@ -2,8 +2,5 @@ venv/
 .env/
 .env
 __pycache__/
-<<<<<<< HEAD
 myenv/
-=======
->>>>>>> 30960f2fdb797e24e8294fb4cb931dc052c9800d
 *.pyc
