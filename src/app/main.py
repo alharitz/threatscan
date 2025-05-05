@@ -3,6 +3,7 @@ import scanner.main_scanner as main_scanner
 import os
 import api.main_api as main_api
 import json
+import time
 
 app = Flask(
     __name__,
@@ -17,7 +18,12 @@ def home():
 def scan():
     app.logger.debug("scanning")
     try:
+        start_time = time.time()
         scan_results = main_scanner.main()
+        end_time = time.time()
+        total_time = start_time - end_time
+        app.logger.debug(f"Scan time: {total_time}")
+        app.logger.debug("Parsing results")
         
         # Convert dict to JSON string before passing to main_api
         mitigation_results = main_api.main(scan_results)
