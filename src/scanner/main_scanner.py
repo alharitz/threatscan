@@ -12,6 +12,7 @@ def run_scan_with_progress():
         scan_thread.start()
 
         # Monitor progress while scan is running
+        start_time = time.time()
         while scan_thread.is_alive():
             progress = (total_data["completed"] / total_data["total"]) * 100 if total_data["total"] > 0 else 0
             print(f"Scan progress: {progress:.1f}%")
