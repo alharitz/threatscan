@@ -2,5 +2,6 @@ myenv/
 .env/
 .env
 __pycache__/
+myenv/
 *.pyc
 .gitignore
