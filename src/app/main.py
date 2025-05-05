@@ -20,7 +20,7 @@ def scan():
         scan_results = main_scanner.main()
         
         # Convert dict to JSON string before passing to main_api
-        mitigation_results = main_api.main()
+        mitigation_results = main_api.main(scan_results)
 
         app.logger.debug("done!")
         return render_template('result.html', results=mitigation_results)

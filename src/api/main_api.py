@@ -55,10 +55,9 @@ def get_cpes(name, version):
         return []
 
 def get_cves(cpe):
-    url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+    url = "https://services.nvd.nist.gov/rest/json/cves/2.0/"
     params = {
-        "cpeName": cpe,
-        "apiKey": api_key
+        "cpeName": cpe
     }    
     try:
         time.sleep(6)  # NVD API has rate limits of 5 requests/30 seconds
