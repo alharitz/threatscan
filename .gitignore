@@ -5,3 +5,5 @@ __pycache__/
 myenv/
 *.pyc
 .gitignore
+sqlite/
+data/
