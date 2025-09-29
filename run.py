@@ -1,11 +1,13 @@
-import os
-import time
-import subprocess
-import webbrowser
-from threading import Thread
+# import os
+# import time
+# import subprocess
+# import webbrowser
+# from threading import Thread
 #from app.web import main as web
-from core.cpe import cpe
-from db import init_db
+# from core.cpe import cpe
+# from db import init_db
+from core.scanner.main import Scanner
+from collectors.utils import saved_collector 
 
 if __name__ == "__main__":
     print(
@@ -21,10 +23,16 @@ if __name__ == "__main__":
     )
 
     print("🚀 Starting Threat Scanner...")
-    time.sleep(1)
-    print("🔎 Loading vulnerability database...")
-    init_db.init_cpe_table()
-    cpe.get_cpe()
+    print("🚀 Running Collectors... ")
+
+    collector = Scanner()
+    saved_collector.save_all(collector.run())
+
+    print("✅ Threat Scanner is ready!")
+    # time.sleep(1)
+    # print("🔎 Loading vulnerability database...")
+    # init_db.init_cpe_table()
+    # cpe.get_cpe()
 
     # print("🌐 Initializin web server...")
     # web_thread = Thread(target=web)

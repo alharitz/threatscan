@@ -1,4 +1,5 @@
 venv/
+.venv/
 .env/
 .env
 __pycache__/
@@ -6,4 +7,6 @@ myenv/
 *.pyc
 .gitignore
 sqlite/
-data/
+storage/**
+!storage/*
+!storage/**/.gitkeep

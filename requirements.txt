@@ -1,7 +1,6 @@
-rquests
 python-dotenv
 flask
 pyinstaller
 openai
-sqlite3
-
+wmi
+psutil

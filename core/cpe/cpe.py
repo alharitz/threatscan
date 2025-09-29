@@ -15,20 +15,20 @@ def get_cpe():
     headers = {"User-Agent": "Mozilla/5.0 (compatible; MyCPEFetcher/1.0)"}
 
     # # Download the CPE dictionary
-    # response = requests.get(url, headers=headers, stream=True)
-    # if response.status_code == 200:
-    #     with open(zipFilePath, "wb") as f:
-    #         for chunk in response.iter_content(chunk_size=8192):
-    #             f.write(chunk)
-    #     print("✅ Downloaded successfully")
-    # else:
-    #     print("❌ Download failed:", response.status_code)
-    #     return
-    #
-    # # Extract the XML file
-    # print("Extracting CPE...")
-    # with zipfile.ZipFile(zipFilePath, "r") as zip_ref:
-    #     zip_ref.extractall(extract_dir)
+    response = requests.get(url, headers=headers, stream=True)
+    if response.status_code == 200:
+        with open(zipFilePath, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print("✅ Downloaded successfully")
+    else:
+        print("❌ Download failed:", response.status_code)
+        return
+
+    # Extract the XML file
+    print("Extracting CPE...")
+    with zipfile.ZipFile(zipFilePath, "r") as zip_ref:
+        zip_ref.extractall(extract_dir)
 
     # Parse the XML file
     tree = ET.parse(cpeFilePath)

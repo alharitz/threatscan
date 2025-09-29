@@ -27,7 +27,7 @@ def insert_cpe(cpe_list):
             conn.commit()
 
         except sqlite3.Error as e:
-            print(f"❌ Error while inserting CPE into the database : {e}")
+            print(f"❌ Error while inserting CPE into the database ")
         except Exception as e:
             print(e)
 

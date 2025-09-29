@@ -31,8 +31,8 @@ def scan():
         app.logger.debug("done!")
         return render_template('result.html', results=mitigation_results)
     except Exception as e:
-        app.logger.error(f"Scan error: {e}")
-        return f"Error during scan: {e}"
+        app.logger.error(f"Scan error")
+        return f"Error during scan"
     
 @app.route('/result')
 def result():
