@@ -34,6 +34,9 @@ def get_cpes(name, version):
         if response.status_code == 404:
             print(f"No CPE data found for {name} {version}")
             return []
+        if response.status_code == 404:
+            print(f"No CPE data found for {name} {version}")
+            return []
         response.raise_for_status()
         data = response.json()
 
@@ -56,6 +59,7 @@ def get_cves(cpe):
     params = {"cpeName": cpe}
     try:
         time.sleep(6)  # NVD API has rate limits of 5 requests/30 seconds
+        time.sleep(6)  # NVD API has rate limits of 5 requests/30 seconds
         response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         return response.json().get("vulnerabilities", [])
@@ -69,6 +73,8 @@ def process_result(result):
 
     for key, value in result.items():
         try:
+            # parsed_value = json.loads(value)
+            parsed_value = value
             # parsed_value = json.loads(value)
             parsed_value = value
         except json.JSONDecodeError:
