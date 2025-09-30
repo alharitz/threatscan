@@ -1,5 +1,6 @@
-requests
 python-dotenv
 flask
 pyinstaller
 openai
+wmi
+psutil
