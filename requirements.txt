@@ -1,6 +1,5 @@
-python-dotenv
-flask
-pyinstaller
-openai
-wmi
+# python-dotenv
+# flask
+# openai
+# wmi
 psutil

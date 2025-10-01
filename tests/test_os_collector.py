@@ -13,7 +13,7 @@ def test_os_collector():
     
     log.info(f"OS Detection: {collector.detect()}")
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    data_path = os.path.join(base_dir, "../testing/collector_results/os_info.json")
+    data_path = os.path.join(base_dir, "../storage/testing/collector_results/os_info.json")
     data_path = os.path.normpath(data_path) 
 
     try:

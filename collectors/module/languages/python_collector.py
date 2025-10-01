@@ -1,8 +1,8 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import python_parser
 import subprocess
 import shutil
-import json
 
 log = setup_logger()
 log = log.getChild("collector")
@@ -48,13 +48,13 @@ print(json.dumps(dists))
 
                 python_version = raw_python_version.split()[1]
 
-                outputs = subprocess.check_output(
+                output = subprocess.check_output(
                     [interpreter, "-c", helper_code],
                     text=True,
                     stderr=subprocess.STDOUT
                 )
 
-                packages = json.loads(outputs)
+                packages = python_parser.pythonParser(output, log)
 
                 results.append({
                     "language": "python",
