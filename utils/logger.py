@@ -27,6 +27,13 @@ def setup_logger():
         "[%(asctime)s][%(levelname)s][%(name)s] %(message)s"
     ))
 
+    # LOG WARNING
+    warning_handler = logging.FileHandler(os.path.join(log_dir, "warning.log"), mode="w")
+    warning_handler.setLevel(logging.WARNING)
+    warning_handler.setFormatter(logging.Formatter(
+        "[%(asctime)s][%(levelname)s][%(name)s] %(message)s"
+    ))
+
     # LOG ERROR
     error_handler = logging.FileHandler(os.path.join(log_dir, "error.log"), mode="w")
     error_handler.setLevel(logging.ERROR)
@@ -42,6 +49,14 @@ def setup_logger():
     console_log_handler.setLevel(logging.INFO)
     console_log_handler.addFilter(NoExceptionFilter())
     console_log_handler.setFormatter(logging.Formatter(
+        "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s"
+    ))
+
+    # CONSOLE LOG WARNING
+    console_warning_handler = logging.StreamHandler()
+    console_warning_handler.setLevel(logging.WARNING)
+    console_warning_handler.addFilter(NoExceptionFilter())
+    console_warning_handler.setFormatter(logging.Formatter(
         "[%(asctime)s][%(levelname)s][%(name)s]: %(message)s"
     ))
 

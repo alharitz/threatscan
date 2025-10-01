@@ -61,6 +61,3 @@ class ProcessCollector(BaseCollector):
                 continue
 
         return results
-
-
-

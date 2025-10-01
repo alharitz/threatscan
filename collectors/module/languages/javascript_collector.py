@@ -1,5 +1,6 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import javascript_parser
 import shutil
 import subprocess
 import json
@@ -34,22 +35,12 @@ class NodeCollector(BaseCollector):
                 ).strip()
 
             json_output = json.loads(output)
-            packages = json_output.get("dependencies", {})
-
-            parsed_packages = []
-            for pkg_name, pkg_info in packages.items():
-                name = pkg_name.lstrip("@").strip()
-                version = (pkg_info.get("version") or "").strip() if isinstance(pkg_info, dict) else ""
-
-                parsed_packages.append({
-                    "name": name,
-                    "version": version
-                })
+            packages = javascript_parser.nodeParser(json_output.get("dependencies", {}), log)
 
             results.append({
                 "runtime": "nodejs",
                 "runtime_version": runtime_version.lstrip("v"),
-                "packages": parsed_packages
+                "packages": packages
             })
 
             return results
@@ -72,29 +63,18 @@ class BunCollector(BaseCollector):
                     stderr=subprocess.STDOUT
                 ).strip()
 
-            proc = subprocess.run(
+            process = subprocess.run(
                     ["bun", "pm", "ls", "--global", "--all"],
                     text=True,
                     capture_output=True
                 )
 
-            outputs = (proc.stdout or proc.stderr or "").strip()
-            if proc.returncode != 0:
-                log.error(f"Failed collecting Javascript (Bun) Packages: {proc.returncode}", exc_info=True)
+            if process.returncode != 0:
+                log.error(f"Failed collecting Javascript (Bun) Packages: {process.stderr or process.stdout}")
+                return []
 
-            lines = outputs.splitlines()
-            packages_location = lines[0].strip()
-
-            packages = []
-            for line in lines[1:]:
-                _, clean_line = line.split(" ", 1)
-
-                name, version = clean_line.split("@", 1)
-                packages.append({
-                    "name": name,
-                    "version": version
-                })
-                
+            output = (process.stdout or "").strip()
+            packages = javascript_parser.bunParser(output, log)
 
             results.append({
                 "runtime": "bun",

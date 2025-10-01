@@ -1,8 +1,8 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import php_parser
 import shutil
 import subprocess
-import json
 
 log = setup_logger()
 log = log.getChild("collector")
@@ -75,18 +75,10 @@ class PHPCollector(BaseCollector):
                     stderr=subprocess.STDOUT
                 )
                 
-                idx = output.find("{")
-                json_output = json.loads(output[idx:])
+                parsed_packages = php_parser.phpParser(output, log)
 
-                packages = json_output.get("installed", [])
-
-                for p in packages:
-                    parsed_packages.append({
-                        "name": p["name"],
-                        "version": p["version"]
-                    })
             else:
-                log.info("composer not found")
+                log.warning("composer not found")
 
             results.append({
                 "language": "php",

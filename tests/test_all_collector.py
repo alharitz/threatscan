@@ -3,6 +3,9 @@ from utils.logger import setup_logger
 import os
 import json
 
+# to test in other os or language via docker
+# docker run -it --rm -v ${PWD}:/app -w /app php bash
+
 log = setup_logger()
 log = log.getChild("testing")
 

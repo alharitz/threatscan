@@ -1,5 +1,6 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import perl_parser
 import shutil
 import subprocess
 
@@ -61,17 +62,7 @@ class PerlCollector(BaseCollector):
                     stderr=subprocess.STDOUT
                 )
 
-                for line in output.splitlines():
-                    parts = line.strip().split(maxsplit=1)
-
-                    if len(parts) :
-                        name, version = parts
-                        version = version.strip("v")
-
-                        packages.append({
-                            "name": name,
-                            "version": version
-                        })
+                packages = perl_parser.perlParser(output, log)
 
             else:
                 log.error("Failed collecting Perl Path")

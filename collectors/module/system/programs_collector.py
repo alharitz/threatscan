@@ -1,6 +1,10 @@
 from collectors.module.base_collector import BaseCollector
-import winreg
+from collectors.parser import program_collector_parser
 from utils.logger import setup_logger
+import platform
+import shutil
+import subprocess
+import json
 
 log = setup_logger()
 log = log.getChild("collector")
@@ -10,7 +14,9 @@ class ProgramsCollector(BaseCollector):
     def detect(self) -> bool:
         return True
 
-    def collect(self) -> list[dict]:
+    def _collect_windows_programs(self) -> list[dict]:
+        import winreg
+
         uninstall_keys = [
                 (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"),
                 (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"),
@@ -52,3 +58,65 @@ class ProgramsCollector(BaseCollector):
         results = [dict(unique_app_tuple) for unique_app_tuple in unique_apps_tuples]
 
         return results
+    
+    def _collect_linux_programs(self) -> list[dict]:
+        if shutil.which("dpkg-query"):
+            cmd = "dpkg-query -W -f='${Package}\\t${Version}\\n'"
+
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return program_collector_parser.linuxPackageParser(output.stdout, log)
+
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect dpkg packages: '{e}", exc_info=True)
+                return []
+
+        elif shutil.which("rpm"):
+            cmd = "rpm -qa --qf '%{NAME}\\t%{VERSION}-%{RELEASE}\\n'"
+            
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return program_collector_parser.linuxPackageParser(output.stdout, log)
+            
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect rpm packages: '{e}", exc_info=True)
+                return []
+
+        elif shutil.which("pacman"):
+            cmd = 'pacman -Q --qf "%n\\t%v"'
+            
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return program_collector_parser.linuxPackageParser(output.stdout, log)
+            
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect pacman packages: '{e}", exc_info=True)
+                return []
+
+        else:
+            log.warning("Could not detect a known pacakage manager(dpg, rpm, pacman).")
+            return []
+            
+    def _collect_macos_programs(self) -> list[dict]:
+        cmd = ["system_profiler", "SPApplicationsDataType", "-json"]
+        
+        try:
+            output = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            return program_collector_parser.macosPackageParser(output.stdout, log)
+        
+        except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired) as e:
+            log.error(f"Failed to collect macos packages: '{e}", exc_info=True)
+            return []
+
+    def collect(self) -> list[dict]:
+        system = platform.system()
+
+        if system == "Windows":
+            return self._collect_windows_programs()
+        elif system == "Linux":
+            return self._collect_linux_programs()
+        elif system == "Darwin":
+            return self._collect_macos_programs()
+
+        log.warning(f"Unsupported OS: {system}")
+        return []

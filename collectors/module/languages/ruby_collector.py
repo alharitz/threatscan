@@ -1,5 +1,6 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import ruby_parser
 import shutil
 import subprocess
 
@@ -63,7 +64,7 @@ class RubyCollector(BaseCollector):
         package_manager = None
 
         try:
-            gems = []
+            packages = []
             if gem_path is not None:
                 package_manager = "gem"
                 
@@ -73,22 +74,7 @@ class RubyCollector(BaseCollector):
                     stderr=subprocess.STDOUT
                 )
 
-                for line in output.splitlines():
-                    line = line.strip()
-                    if not line or line.startswith("**"):
-                        continue
-                
-                    if " (" in line:
-                        name, versions = line.split(" (", 1)
-                        versions = versions.rstrip(")")
-                        versions = versions.replace("default: ", "").strip()
-
-                        active_version = versions.split(",")[-1].strip()
-
-                        gems.append({
-                            "name": name,
-                            "version": active_version
-                        })
+                packages = ruby_parser.rubyParser(output, log)
             else:
                 log.info("gem path not found")
 
@@ -97,7 +83,7 @@ class RubyCollector(BaseCollector):
                 "language_version": ruby_version,
                 "package_manager": package_manager,
                 "package_manager_version": gem_version,
-                "packages": gems
+                "packages": packages
             })
 
         except Exception as e:

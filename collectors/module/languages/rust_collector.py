@@ -1,5 +1,6 @@
 from collectors.module.base_collector import BaseCollector
 from utils.logger import setup_logger
+from collectors.parser import rust_parser
 import shutil
 import subprocess
 
@@ -74,20 +75,7 @@ class RustCollector(BaseCollector):
                     stderr=subprocess.STDOUT
                 )
 
-                for line in output.splitlines():
-                    line = line.strip()
-
-                    if not line or ":" not in line:
-                        continue
-                    
-                    name, version = line.split(" v", 1)
-                    version = version.split(":")[0].strip()
-
-                    packages.append({
-                        "name": name,
-                        "version": version
-                    })
-
+                packages = rust_parser.rustParser(output, log)
             else:
                 log.error("Failed collecting Rust & Cargo Path")
 
