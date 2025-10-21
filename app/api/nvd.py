@@ -10,7 +10,6 @@ api_key = settings.NVD_API_KEY
 if not api_key:
     raise ValueError("NVD_API_KEY environment variable not set")
 
-
 def get_cpes(name, version):
     url = "https://services.nvd.nist.gov/rest/json/cpes/2.0"
     headers = {"apiKey": api_key, "Accept": "application/json"}

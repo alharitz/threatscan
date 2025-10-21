@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
-import scanner.main_scanner as main_scanner
+import core.scanner.main as main_scanner
 import os
-import api.main_api as main_api
+import app.api.llm_api as main_api
 import json
 import time
 
@@ -36,8 +36,8 @@ def scan():
     
 @app.route('/result')
 def result():
-    # with open('mitigation_results.json', 'r') as f:
-    #     mitigation_data = json.load(f)
+    with open('mitigation_results.json', 'r') as f:
+        mitigation_data = json.load(f)
         
     return render_template('result.html')
 
