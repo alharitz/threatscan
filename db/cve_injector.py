@@ -21,7 +21,7 @@ DB_CONF = dict(
 # Load data
 FOLDER = "./data/cve_data"
 GLOB_PATTERN = "nvdcve-2.0-*.json"
-BATCH_SIZE = 10000
+BATCH_SIZE = 500000
 
 # Query
 INSERT_SQL = """

@@ -21,7 +21,7 @@ DB_CONF = dict(
 # Load data
 FOLDER = "./data/cpe_data"
 GLOB_PATTERN = "nvdcpe-2.0-chunk-*.json"
-BATCH_SIZE = 10000
+BATCH_SIZE = 500000
 
 # Query
 INSERT_SQL = """
@@ -89,7 +89,7 @@ def process_file(cur, filepath):
     return inserted
 
 
-def inject_cpe_chunks(folder: str = FOLDER):
+def inject_cpe_data(folder: str = FOLDER):
     """Process all chunk files and inject them into PostgreSQL."""
     files = sorted(glob(os.path.join(folder, GLOB_PATTERN)))
     if not files:
@@ -119,4 +119,4 @@ def inject_cpe_chunks(folder: str = FOLDER):
 
 # Allow Direct Run
 if __name__ == "__main__":
-    inject_cpe_chunks()
+    inject_cpe_data()

@@ -1,6 +1,10 @@
-from collectors.module.base_collector import BaseCollector
+# collectors/system/os_collector.py
+
 import platform
 import sys
+from collectors.base_collector import BaseCollector
+from utils.normalize import normalize_version, normalize_name
+from .os_parser import parse_os
 
 class OSCollector(BaseCollector):
 
@@ -28,17 +32,14 @@ class OSCollector(BaseCollector):
         else:
             try:
                 with open("/etc/os-release", "r") as f:
-                    release_data = {}
-                    for line in f:
-                        if '=' in line:
-                            key, value = line.strip().split('=', 1)
-                            value = value.strip('"')
-                            release_data[key] = value
+                    content = f.read()
+
+                release_data = parse_os(content)
                 
                 name = release_data.get('PRETTY_NAME', 'Linux')
                 version = release_data.get('VERSION_ID', 'Unknown')
 
-            except (OSError,ValueError):
+            except (OSError, ValueError):
                 name = "Linux"
                 version = platform.release()
 
@@ -52,8 +53,7 @@ class OSCollector(BaseCollector):
         return name, version
 
     def collect(self) -> list[dict]:
-        os_name, os_version = "Unknwon", "Unknown"
-
+        os_name, os_version = "Unknown", "Unknown"
         system = platform.system()
 
         if system == "Windows":
@@ -63,8 +63,13 @@ class OSCollector(BaseCollector):
         elif system == "Darwin":
             os_name, os_version = self._collect_macos_info()
 
+        normalized_name = normalize_name(os_name)
+        normalized_version = normalize_version(os_version)
 
         return [{
             "name": os_name,
             "version": os_version,
+            "normalized_name": normalized_name,
+            "normalized_version": normalized_version,
+            "type": "operating_system"
         }]

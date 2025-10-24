@@ -21,7 +21,7 @@ def setup_logger():
 
 
     # LOG INFO
-    info_handler = logging.FileHandler(os.path.join(log_dir, "info.log"), mode="w")
+    info_handler = logging.FileHandler(os.path.join(log_dir, "info.log"), mode="w", encoding="utf-8")
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(
         "[%(asctime)s][%(levelname)s][%(name)s] %(message)s"
@@ -46,6 +46,7 @@ def setup_logger():
 
     # CONSOLE LOG INFO
     console_log_handler = logging.StreamHandler()
+    console_log_handler.setFormatter(...)
     console_log_handler.setLevel(logging.INFO)
     console_log_handler.addFilter(NoExceptionFilter())
     console_log_handler.setFormatter(logging.Formatter(
