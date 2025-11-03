@@ -1,49 +1,138 @@
-from flask import Flask, render_template, jsonify
-import core.scanner.main as main_scanner
+# app/web/main.py
+
+from flask import Flask, render_template, jsonify, abort
 import os
-import app.api.llm_api as main_api
 import json
+import sys
 import time
+
+# --- 1. Magic Pathing Biar Bisa Import dari Root! ---
+# Ini nambahin folder 'vuln_scanner/' (induknya 'app/') ke path
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if PROJECT_ROOT not in sys.path:
+    sys.path.append(PROJECT_ROOT)
+
+# --- 2. Import Helper & API kita ---
+from utils.paths import RESULT_STORAGE_DIR  # noqa: E402
+# Path helper kita!
+# Kita komen dulu import LLM-nya, sesuai permintaanmu
+# import app.api.llm_api as main_api
 
 app = Flask(
     __name__,
-    template_folder=os.path.join(os.path.dirname(__file__), '..', 'templates')
+    # Pathing template-nya kita benerin pake PROJECT_ROOT
+    template_folder=os.path.join(PROJECT_ROOT, 'app', 'templates')
 )
 
+# --- 3. Helper Buat Ngebaca Laporan ---
+def load_report():
+    """Membaca file laporan JSON yang udah mateng."""
+    report_path = os.path.join(RESULT_STORAGE_DIR, "vulnerability_report.json")
+    try:
+        with open(report_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        # Ambil waktu kapan file terakhir diubah
+        last_modified_timestamp = os.path.getmtime(report_path)
+        last_scan_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(last_modified_timestamp))
+        return data, last_scan_time # Kembalikan data DAN waktu scan
+    except FileNotFoundError:
+        app.logger.error(f"File laporan TIDAK DITEMUKAN di: {report_path}")
+        return None, None # Balikin None kalo filenya gak ada
+    except Exception as e:
+        app.logger.error(f"Gagal ngebaca file laporan: {e}")
+        return None, None
+
+# --- 4. Rute Halaman Utama (index.html) ---
 @app.route('/')
 def home():
+    # Cuma nampilin halaman welcome
     return render_template('index.html')
 
-@app.route('/scan')
-def scan():
-    app.logger.debug("scanning")
-    try:
-        start_time = time.time()
-        scan_results = main_scanner.main()
-        end_time = time.time()
-        total_time = start_time - end_time
-        app.logger.debug(f"Scan time: {total_time}")
-        app.logger.debug("Parsing results")
-        
-        # Convert dict to JSON string before passing to main_api
-        mitigation_results = main_api.main(scan_results)
+# --- 5. Hapus /scan! ---
+# Proses scan hanya via CLI 'python main.py'
 
-        app.logger.debug("done!")
-        return render_template('result.html', results=mitigation_results)
-    except Exception as e:
-        app.logger.error(f"Scan error")
-        return f"Error during scan"
-    
+# --- 6. /result: Halaman Utama Laporan ---
 @app.route('/result')
 def result():
-    with open('mitigation_results.json', 'r') as f:
-        mitigation_data = json.load(f)
-        
-    return render_template('result.html')
+    report_data, last_scan_time = load_report()
 
-@app.route('/detail')
-def detail():
-    return render_template('detail.html')
+    if report_data is None:
+        # Template error baru (opsional, bisa dibuat nanti)
+        # return render_template('error.html', message="...")
+        return "Error: File 'vulnerability_report.json' not found. Please run `python main.py` first.", 404
+
+    # Filter: cuma tampilin software yg ADA vulnerability-nya
+    vulnerable_items = [item for item in report_data if item.get("vulnerabilities")]
+
+    # Kirim semua data yang dibutuhin 'result.html'
+    return render_template('result.html',
+                           results=vulnerable_items,
+                           total_scanned=len(report_data),
+                           total_vulnerable=len(vulnerable_items),
+                           last_scan_time=last_scan_time or "N/A") # Kirim waktu scan juga
+
+# --- 7. /detail/<cve_id>: Halaman Detail CVE ---
+@app.route('/detail/<cve_id>')
+def detail(cve_id):
+    report_data, _ = load_report() # Waktu scan gak perlu di sini
+    if report_data is None:
+        abort(404) # Gak nemu file, 404 aja
+
+    found_cve = None
+    found_in_software = None
+
+    # Cari CVE itu di dalem laporan kita
+    for item in report_data:
+        for vuln in item.get("vulnerabilities", []):
+            # Normalisasi CVE ID (siapa tau ada spasi aneh)
+            if vuln.get("cve_id", "").strip() == cve_id.strip():
+                found_cve = vuln
+                found_in_software = item
+                break
+        if found_cve:
+            break
+
+    if not found_cve:
+        # Gak nemu CVE-nya di laporan, kasih 404
+        abort(404, description=f"CVE ID '{cve_id}' not found in the report.")
+
+    # Kirim data software & CVE-nya ke 'detail.html'
+    return render_template('detail.html', cve=found_cve, software=found_in_software)
+
+# --- 8. API buat LLM (Udah Siap, Tinggal Un-comment) ---
+@app.route('/api/mitigate/<cve_id>')
+def api_mitigate(cve_id):
+    report_data, _ = load_report()
+    if report_data is None:
+        return jsonify({"error": "Report file not found"}), 404
+
+    summary = ""
+    for item in report_data:
+        for vuln in item.get("vulnerabilities", []):
+             if vuln.get("cve_id", "").strip() == cve_id.strip():
+                summary = vuln.get("summary")
+                break
+        if summary: 
+            break # Keluar dari loop luar juga
+
+    if not summary:
+        return jsonify({"error": "CVE not found in report"}), 404
+
+    try:
+        # --- NANTI DI-UNCOMMENT KALAU LLM SIAP ---
+        # mitigation_text = main_api.main(summary)
+        # return jsonify({"mitigation": mitigation_text})
+        # ----------------------------------------
+
+        # --- UNTUK SEKARANG, KITA KASIH DUMMY DATA ---
+        time.sleep(2) # Simulasi loading LLM
+        return jsonify({"mitigation": f"Mitigation steps for {cve_id} (generated by AI):\n- Step 1\n- Step 2\n- Step 3 (This is dummy data)"})
+        # --------------------------------------------
+
+    except Exception as e:
+        app.logger.error(f"LLM API error (dummy or real): {e}")
+        return jsonify({"error": "Failed to get mitigation"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Pastiin port-nya 5000 (sesuai file main.py lama kamu)
+    app.run(debug=True, port=5000)

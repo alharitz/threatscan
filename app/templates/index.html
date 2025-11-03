@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Welcome - ThreatScan</title>
+</head>
+<body class="bg-slate-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+    <header class="my-8 mx-10 flex justify-between items-center">
+        <div class="flex gap-1">
+            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
+            <h1 class="text-2xl text-violet-500">scan</h1>
+        </div>
+        <a href="{{ url_for('result') }}" class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition text-stone-100 font-semibold">
+            View Latest Scan Report
+        </a>
+    </header>
+
+    <main class="mx-10 mt-20 flex-grow flex flex-col justify-center items-center text-center">
+        <h2 class="text-4xl font-bold mb-4">
+            Welcome to <span class="text-fuchsia-400">Threat</span><span class="text-violet-500">scan</span>!
+        </h2>
+        <p class="text-lg text-stone-300 mb-8 max-w-2xl">
+            Your local vulnerability scanner. Run the scan from your terminal using <code class="bg-slate-700 px-2 py-1 rounded text-fuchsia-300">python main.py</code> and view the results here.
+        </p>
+        <a href="{{ url_for('result') }}"

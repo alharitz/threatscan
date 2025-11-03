@@ -1,6 +1,8 @@
 import logging
 import os
 
+from utils.paths import LOG_DIR
+
 class NoExceptionFilter(logging.Filter):
     def filter(self, record):
         record.exc_info = None
@@ -8,9 +10,7 @@ class NoExceptionFilter(logging.Filter):
         return True
 
 def setup_logger():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    log_dir = os.path.join(base_dir, "../storage/logs")
-    log_dir = os.path.normpath(log_dir)
+    log_dir = LOG_DIR
     os.makedirs(log_dir, exist_ok=True)
 
     root_logger = logging.getLogger("threatscan")

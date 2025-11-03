@@ -21,7 +21,7 @@ class PythonCollector(BaseCollector):
 
         for candidate in candidates:
             path = shutil.which(candidate)
-            if path and path not in found and "WindowsApps" not in path.lower():
+            if path and path not in found and "windowsapps" not in path.lower():
                 found.append(path)
         return found
 

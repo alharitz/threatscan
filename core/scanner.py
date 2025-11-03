@@ -1,7 +1,7 @@
 # core/scanner.py
 
 from utils.logger import setup_logger
-from utils.paths import RAW_STORAGE_DIR
+from utils.paths import RESULT_STORAGE_DIR
 import json
 import os
 
@@ -73,10 +73,10 @@ class Scanner:
             log.warning("Scan result is empty, skipping save.")
             return
 
-        save_path = os.path.join(RAW_STORAGE_DIR, filename)
+        save_path = os.path.join(RESULT_STORAGE_DIR, filename)
         
         try:
-            os.makedirs(RAW_STORAGE_DIR, exist_ok=True)
+            os.makedirs(RESULT_STORAGE_DIR, exist_ok=True)
             
             with open(save_path, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)

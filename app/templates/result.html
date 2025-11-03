@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Scan Results - ThreatScan</title>
+</head>
+<body class="bg-slate-900 max-w-[1920px] mx-auto text-stone-100">
+    <header class="my-8 mx-10 flex justify-between items-center">
+        <div class="flex gap-1">
+            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
+            <h1 class="text-2xl text-violet-500">scan</h1>
+        </div>
+        <a href="{{ url_for('home') }}" class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition text-stone-100 font-semibold">
+            Back to Home
+        </a>
+    </header>
+
+    <main class="mx-10 mt-10">
+        <h2 class="text-xl text-fuchsia-400 mb-4">Vulnerability Scan Results</h2>
+
+        <div class="mb-8 p-4 bg-slate-800 rounded-lg flex justify-between items-center">
+            <p>Total items scanned: <span class="font-semibold text-violet-400">{{ total_scanned }}</span></p>
+            <p>Items with vulnerabilities: <span class="font-semibold text-red-400">{{ total_vulnerable }}</span></p>
+            </div>
+
+        {% if results %}
+            {% for item in results %} {# Loop list software yg rentan #}
+                <section class="mb-8 p-6 bg-slate-800 rounded-lg shadow-md">
+                    <h3 class="text-lg text-violet-400 font-semibold mb-3 border-b border-slate-700 pb-2">
+                        {{ item.name }} <span class="text-sm text-stone-400">({{ item.version }})</span> -
+                        <span class="text-red-400">{{ item.vulnerabilities|length }} vulnerabilities found</span>
+                    </h3>
+
+                    <ul class="space-y-4">
+                        {% for vuln in item.vulnerabilities %} {# Loop CVEs di software ini #}
+                            <li class="bg-slate-700 p-4 rounded transition hover:bg-slate-600">
+                                <div class="flex justify-between items-center mb-2">
+                                    <a href="{{ url_for('detail', cve_id=vuln.cve_id) }}" class="font-semibold text-fuchsia-400 hover:underline">
+                                        {{ vuln.cve_id }}
+                                    </a>
+                                    <span class="text-xs px-2 py-1 rounded {{ get_severity_class(vuln.base_severity) }}">
+                                        {{ vuln.base_severity or 'N/A' }}
+                                        {% if vuln.cvss_v3_base_score %}
+                                        ({{ "%.1f"|format(vuln.cvss_v3_base_score) }}) {# Format skor jadi 1 desimal #}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-stone-300">{{ vuln.summary or 'No summary available.' }}</p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            {% endfor %}
+        {% else %}
+             <div class="bg-slate-800 p-6 rounded-lg text-center">
+                <p class="text-xl text-green-400 font-semibold">🎉 No vulnerabilities found!</p>
+                <p class="text-stone-400 mt-2">Your system appears to be clean based on the last scan.</p>
+            </div>
+        {% endif %}
+    </main>
+
+    {% macro get_severity_class(severity) %}
+        {% set severity = severity|upper if severity else 'NONE' %} {# Pastikan uppercase #}
+        {% if severity == 'CRITICAL' %}bg-purple-600 text-white
+        {% elif severity == 'HIGH' %}bg-red-600 text-white
+        {% elif severity == 'MEDIUM' %}bg-orange-500 text-black
+        {% elif severity == 'LOW' %}bg-yellow-400 text-black
+        {% else %}bg-gray-500 text-white {# Buat N/A atau NONE #}
+        {% endif %}
+    {% endmacro %}
+
+</body>
+</html>
