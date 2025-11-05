@@ -1,100 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>CVE Detail: {{ cve.cve_id }} - ThreatScan</title>
+    <style>
+        /* Custom Scrollbar for WebKit Browsers */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4a5568; /* slate-600 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #718096; /* slate-500 */
+        }
+    </style>
+    <title>Vulnerability Details - ThreatScan</title>
 </head>
-<body class="bg-slate-900 max-w-[1920px] mx-auto text-stone-100">
-    <header class="my-8 mx-10 flex flex-row justify-between items-center">
-        <div class="flex flex-row gap-0">
-            <h1 class="text-2xl text-fuchsia-400">Threat</h1>
-            <h1 class="text-2xl text-violet-500">scan</h1>
-        </div>
-        <a href="{{ url_for('result') }}" class="bg-fuchsia-400 px-5 py-2 rounded-full hover:bg-fuchsia-500 transition duration-300 text-stone-100 font-semibold">
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+    <header class="my-8 mx-auto w-full max-w-7xl px-4 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-12">
+        </a>
+        <a href="{{ url_for('result', scan_id=scan_id) }}" class="bg-fuchsia-500 px-5 py-2 rounded-full hover:bg-fuchsia-600 transition text-white font-semibold shadow-lg">
             Back to Results
         </a>
     </header>
-    <main class="mx-10 mt-10">
-        <div class="flex flex-row justify-between items-center border-b border-slate-700 pb-4 mb-8">
-            <div>
-                <h1 class="text-2xl text-fuchsia-400">{{ cve.cve_id }}</h1>
-                <h2 class="text-lg text-stone-300 mt-1">Affecting: <span class="font-semibold text-violet-400">{{ software.name }} {{ software.version }}</span></h2>
-            </div>
-            <span class="px-3 py-1 rounded-md text-lg {{ get_severity_class(cve.base_severity) }}">
-                {{ cve.base_severity or 'N/A' }}
-                {% if cve.cvss_v3_base_score %}
-                    ({{ "%.1f"|format(cve.cvss_v3_base_score) }}) {# Format skor jadi 1 desimal #}
-                {% endif %}
-            </span>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 mb-8">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-fuchsia-400">{{ item.name }}</h1>
+            <p class="text-lg text-stone-400">Version: {{ item.version }}</p>
         </div>
 
-        <div>
-            <h2 class="text-xl text-fuchsia-400 mb-4">Description</h2>
-            <div class="bg-slate-800 rounded-lg p-5">
-                <p class="text-stone-300">
-                    {{ cve.summary or 'No description available.' }}
-                </p>
+        <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col h-[32rem]">
+            <div class="p-6 border-b border-red-500/30">
+                <h2 class="text-2xl font-semibold text-red-400">Found {{ item.vulnerabilities|length }} Vulnerabilities</h2>
+            </div>
+            <div class="overflow-y-auto custom-scrollbar">
+                <table class="w-full text-left">
+                    <thead class="sticky top-0 bg-slate-800/80 backdrop-blur-sm z-10">
+                        <tr>
+                            <th class="p-4 font-semibold w-1/6">CVE ID</th>
+                            <th class="p-4 font-semibold text-center">Severity</th>
+                            <th class="p-4 font-semibold">Summary</th>
+                            <th class="p-4 font-semibold text-center w-1/6">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for vuln in item.vulnerabilities %}
+                            <tr class="border-t border-slate-700/50 hover:bg-slate-700/50 transition-colors">
+                                <td class="p-4 font-medium text-fuchsia-400 w-1/6">{{ vuln.cve_id }}</td>
+                                <td class="p-4 text-center">
+                                    <span class="text-xs px-2 py-1 rounded-full font-semibold {{ get_severity_class(vuln.base_severity) }}">
+                                        {{ vuln.base_severity or 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="p-4 text-sm text-stone-300">{{ vuln.summary or 'No summary available.' }}</td>
+                                <td class="p-4 text-center w-1/6">
+                                    <a href="{{ url_for('cve_detail', cve_id=vuln.cve_id) }}" class="bg-violet-500 px-4 py-2 rounded-full hover:bg-violet-600 transition text-xs font-semibold shadow-md">
+                                        More Info
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <div class="mt-8">
-            <h2 class="text-xl text-fuchsia-400 mb-4">Mitigation (AI Generated - Click Button Below)</h2>
-            <div class="bg-slate-800 rounded-lg p-5">
-                <p class="text-stone-400 italic" id="mitigation-placeholder">Click the button below to generate mitigation steps using AI.</p>
-                <div id="mitigation-content" class="hidden prose prose-invert max-w-none prose-ul:list-disc prose-ul:pl-5 prose-li:mt-1 text-stone-300">
-                    </div>
-                <button id="load-mitigation-btn" onclick="loadMitigation('{{ cve.cve_id }}')" class="mt-4 bg-violet-500 px-4 py-2 rounded hover:bg-violet-600 transition text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-                    Generate Mitigation Steps (AI)
-                </button>
-            </div>
-        </div>
-
-        </main>
-
-    <script>
-        async function loadMitigation(cveId) {
-            const placeholder = document.getElementById('mitigation-placeholder');
-            const contentDiv = document.getElementById('mitigation-content');
-            const button = document.getElementById('load-mitigation-btn');
-
-            placeholder.textContent = '🧠 Generating mitigation steps with AI... Please wait.';
-            button.disabled = true;
-
-            try {
-                const response = await fetch(`/api/mitigate/${cveId}`);
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Tampilkan hasilnya (kita anggap LLM ngasih Markdown)
-                    // Kita perlu library buat render Markdown, atau minimal ganti newline
-                     // Ganti newline jadi <br> (render HTML sederhana)
-                    contentDiv.innerHTML = `<p>${data.mitigation.replace(/\n/g, '<br>')}</p>`;
-                    contentDiv.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
-                    button.classList.add('hidden');
-                } else {
-                    placeholder.textContent = `❌ Error: ${data.error || 'Failed to load mitigation.'}`;
-                    button.disabled = false; // Aktifin lagi tombolnya kalau error
-                }
-            } catch (error) {
-                console.error('Fetch error:', error);
-                placeholder.textContent = '❌ Error: Could not connect to the mitigation API.';
-                button.disabled = false; // Aktifin lagi tombolnya kalau error
-            }
-        }
-    </script>
-
-    {% macro get_severity_class(severity) %}
-        {% set severity = severity|upper if severity else 'NONE' %} {# Pastikan uppercase #}
-        {% if severity == 'CRITICAL' %}bg-purple-600 text-white
-        {% elif severity == 'HIGH' %}bg-red-600 text-white
-        {% elif severity == 'MEDIUM' %}bg-orange-500 text-black
-        {% elif severity == 'LOW' %}bg-yellow-400 text-black
-        {% else %}bg-gray-500 text-white {# Buat N/A atau NONE #}
-        {% endif %}
-    {% endmacro %}
-
+    </main>
 </body>
 </html>
