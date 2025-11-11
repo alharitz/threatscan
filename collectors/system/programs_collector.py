@@ -134,6 +134,10 @@ class ProgramsCollector(BaseCollector):
             if not name or not version:
                 continue
 
+            # skip node to avoid duplicate with node_version_collector
+            if name.lower() in ("node.js", "nodejs") or "node.js" in name.lower():
+                continue
+            
             final_results.append({
                 "name": name,
                 "version": version,

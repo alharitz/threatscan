@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Scanning - ThreatScan</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/logo.png') }}">
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 text-stone-100 flex flex-col items-center justify-center min-h-screen text-center">
+  <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-20 mb-6 animate-pulse" />
+
+  <h1 class="text-3xl font-semibold mb-2">Scanning in Progress...</h1>
+  <p id="statusText" class="text-stone-300 mb-8">Initializing system scan...</p>
+
+  <!-- progress bar -->
+  <div class="w-64 h-2 bg-slate-700 rounded-full overflow-hidden mb-4">
+    <div id="progress" class="h-full bg-fuchsia-500 animate-[progress_3s_linear_infinite]"></div>
+  </div>
+
+  <style>
+    @keyframes progress {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }
+  </style>
+
+  <p class="text-sm text-stone-400">Scan PID: {{ pid }}</p>
+
+  <script>
+    // --- cycling text messages ---
+    const messages = [
+      "Initializing system scan...",
+      "Collecting installed software...",
+      "Analyzing package versions...",
+      "Matching vulnerabilities from database...",
+      "Generating final report...",
+      "Almost done..."
+    ];
+    let index = 0;
+    const statusText = document.getElementById("statusText");
+
+    setInterval(() => {
+      index = (index + 1) % messages.length;
+      statusText.textContent = messages[index];
+    }, 3500);
+
+    // --- check scan completion ---
+    async function checkStatus() {
+      try {
+        const res = await fetch("/api/scan_status");
+        const data = await res.json();
+        if (data.completed) {
+          window.location.href = "/";
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    setInterval(checkStatus, 5000);
+  </script>
+</body>
+</html>

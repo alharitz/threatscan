@@ -1,6 +1,6 @@
 # app/web/main.py
 
-from flask import Flask, render_template, jsonify, abort, redirect, url_for, request
+from flask import Flask, render_template, jsonify, abort, request
 import os
 import json
 import sys
@@ -57,7 +57,7 @@ def home():
     except FileNotFoundError:
         app.logger.warning(f"scan_log.json not found at: {scan_log_path}")
     except json.JSONDecodeError:
-        app.logger.error(f"Failed to decode scan_log.json")
+        app.logger.error("Failed to decode scan_log.json")
 
     results = []
     for scan_log in scan_logs:
@@ -86,10 +86,15 @@ def scan():
         main_py_path = os.path.join(PROJECT_ROOT, 'main.py')
         
         # Run the scan in a separate process
-        subprocess.Popen([python_executable, main_py_path])
+        process = subprocess.Popen([python_executable, main_py_path])
+
+        # get PID to check progress later if needed
+        pid_file = os.path.join(RESULT_STORAGE_DIR, "scan_pid.txt")
+        with open(pid_file, "w") as f:
+            f.write(str(process.pid))
         
         # Redirect to the results page
-        return redirect(url_for('result'))
+        return render_template("loading.html", pid=process.pid)
     except Exception as e:
         app.logger.error(f"Failed to start scan: {e}")
         return "Error: Failed to start scan.", 500
@@ -106,7 +111,7 @@ def result(scan_id):
     except FileNotFoundError:
         app.logger.warning(f"vulnerability_report.json not found at: {vuln_report_path}")
     except json.JSONDecodeError:
-        app.logger.error(f"Failed to decode vulnerability_report.json")
+        app.logger.error("Failed to decode vulnerability_report.json")
 
     vulnerable_items = [item for item in vuln_report if item.get('vulnerabilities')]
     non_vulnerable_items = [item for item in vuln_report if not item.get('vulnerabilities')]
@@ -213,6 +218,37 @@ def api_mitigate(cve_id):
     except Exception as e:
         app.logger.error(f"LLM API error (dummy or real): {e}")
         return jsonify({"error": "Failed to get mitigation"}), 500
+    
+@app.route("/api/scan_status")
+def scan_status():
+    """
+    Check if the scan process is still running based on stored PID.
+    """
+    pid_file = os.path.join(RESULT_STORAGE_DIR, "scan_pid.txt")
+
+    # no PID file = no running scan
+    if not os.path.exists(pid_file):
+        return jsonify({"completed": True})
+
+    try:
+        with open(pid_file, "r") as f:
+            pid = int(f.read().strip())
+
+        # check if process still alive
+        import psutil
+        if psutil.pid_exists(pid):
+            proc = psutil.Process(pid)
+            if proc.is_running():
+                return jsonify({"completed": False})
+
+        # process finished → remove pid file
+        os.remove(pid_file)
+        return jsonify({"completed": True})
+
+    except Exception as e:
+        app.logger.error(f"Scan status check failed: {e}")
+        return jsonify({"completed": True})
+
 
 if __name__ == '__main__':
     # Pastiin port-nya 5000 (sesuai file main.py lama kamu)

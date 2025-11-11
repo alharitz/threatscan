@@ -3,6 +3,8 @@
 import time
 import os
 import json
+import glob
+
 from utils.logger import setup_logger
 from db.connection import init_db_pool, close_db_pool
 from core.scanner import Scanner
@@ -22,7 +24,6 @@ def run_threatscan():
 
     try:
         # --- 2. Inisialisasi Database Pool ---
-        # Panggil ini SEKALI AJA di awal
         log.info("Initializing database connection pool...")
         init_db_pool()
         log.info("Database pool initialized.")
@@ -37,6 +38,8 @@ def run_threatscan():
 
         if not all_software_list:
             log.warning("Scan finished but found no software. Exiting.")
+            status = False
+            vuln_count = 0
             return
 
         # --- 4. Jalankan Matcher ---
@@ -45,10 +48,20 @@ def run_threatscan():
         
         # Ini adalah list JSON yg udah di-update dgn key 'vulnerabilities'
         final_report = matcher.find_vulnerabilities(all_software_list)
+        vuln_count = sum(1 for item in final_report if item.get("vulnerabilities"))
+        status = True
+
+        from utils.paths import RESULT_STORAGE_DIR
+        os.makedirs(RESULT_STORAGE_DIR, exist_ok=True)
+        existing_reports = glob.glob(os.path.join(RESULT_STORAGE_DIR, "vulnerability_report_*.json"))
+        next_id = len(existing_reports) + 1
+
         log.info("Vulnerability matching complete.")
 
         # --- 5. Simpen Laporan Final ---
-        scanner.save_results_to_file(final_report, "vulnerability_report.json")
+        report_filename = f"vulnerability_report_{next_id}.json"
+        report_path = os.path.join(RESULT_STORAGE_DIR, report_filename)
+        scanner.save_results_to_file(final_report, report_path)
         log.info("Final vulnerability report saved.")
 
         # --- 6. Kasih Ringkasan ---
@@ -59,44 +72,57 @@ def run_threatscan():
         log.info("--------------------------")
 
         # --- 7. Log the scan ---
-        log.info("Logging scan result...")
-        from utils.paths import RESULT_STORAGE_DIR
-        scan_log_path = os.path.join(RESULT_STORAGE_DIR, 'scan_log.json')
-        
-        # Create the directory if it doesn't exist
-        os.makedirs(RESULT_STORAGE_DIR, exist_ok=True)
-
+        scan_log_path = os.path.join(RESULT_STORAGE_DIR, "scan_log.json")
         scan_logs = []
+
         if os.path.exists(scan_log_path):
-            with open(scan_log_path, 'r', encoding='utf-8') as f:
-                try:
+            try:
+                with open(scan_log_path, "r", encoding="utf-8") as f:
                     scan_logs = json.load(f)
-                except json.JSONDecodeError:
-                    log.warning("scan_log.json is corrupted. Starting with an empty log.")
-                    scan_logs = []
-        
-        scan_id = f"#{len(scan_logs):04d}"
-        
-        new_log_entry = {
-            "scan_id": scan_id,
-            "date_time": time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time)),
-            "vulnerabilities_found": total_vulnerable_items,
-            "status": "Completed",
-            "report_url": "/result"
+            except json.JSONDecodeError:
+                log.warning("scan_log.json corrupted, starting fresh.")
+                scan_logs = []
+
+        new_entry = {
+            "scan_id": next_id,
+            "date_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start_time)),
+            "vuln_count": vuln_count,
+            "status": status
         }
-        
-        scan_logs.insert(0, new_log_entry)
-        
-        with open(scan_log_path, 'w', encoding='utf-8') as f:
-            json.dump(scan_logs, f, indent=4)
-            
-        log.info(f"Scan result logged to {scan_log_path}")
+
+        scan_logs.insert(0, new_entry)
+        with open(scan_log_path, "w", encoding="utf-8") as f:
+            json.dump(scan_logs, f, indent=2)
+
+        log.info(f"📝 Logged scan #{next_id} ({vuln_count} vulns)")
 
     except Exception as e:
         log.error(f"FATAL ERROR during scan: {e}", exc_info=True)
-    
+        # ensure failed scans are logged too
+        from utils.paths import RESULT_STORAGE_DIR
+        os.makedirs(RESULT_STORAGE_DIR, exist_ok=True)
+        scan_log_path = os.path.join(RESULT_STORAGE_DIR, "scan_log.json")
+        scan_logs = []
+        if os.path.exists(scan_log_path):
+            try:
+                with open(scan_log_path, "r", encoding="utf-8") as f:
+                    scan_logs = json.load(f)
+            except json.JSONDecodeError:
+                scan_logs = []
+
+        new_entry = {
+            "scan_id": len(scan_logs) + 1,
+            "date_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(start_time)),
+            "vuln_count": 0,
+            "status": False
+        }
+
+        scan_logs.insert(0, new_entry)
+        with open(scan_log_path, "w", encoding="utf-8") as f:
+            json.dump(scan_logs, f, indent=2)
+
     finally:
-        log.info("Closing database connection pool...")
+        log.info("Closing database pool...")
         close_db_pool()
 
     end_time = time.time()
