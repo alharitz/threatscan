@@ -10,3 +10,4 @@ sqlite/
 storage/**
 !storage/*
 !storage/**/.gitkeep
+db/data

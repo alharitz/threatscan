@@ -1,6 +1,8 @@
 import logging
 import os
 
+from utils.paths import LOG_DIR
+
 class NoExceptionFilter(logging.Filter):
     def filter(self, record):
         record.exc_info = None
@@ -8,9 +10,7 @@ class NoExceptionFilter(logging.Filter):
         return True
 
 def setup_logger():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    log_dir = os.path.join(base_dir, "../storage/logs")
-    log_dir = os.path.normpath(log_dir)
+    log_dir = LOG_DIR
     os.makedirs(log_dir, exist_ok=True)
 
     root_logger = logging.getLogger("threatscan")
@@ -21,7 +21,7 @@ def setup_logger():
 
 
     # LOG INFO
-    info_handler = logging.FileHandler(os.path.join(log_dir, "info.log"), mode="w")
+    info_handler = logging.FileHandler(os.path.join(log_dir, "info.log"), mode="w", encoding="utf-8")
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(logging.Formatter(
         "[%(asctime)s][%(levelname)s][%(name)s] %(message)s"
@@ -46,6 +46,7 @@ def setup_logger():
 
     # CONSOLE LOG INFO
     console_log_handler = logging.StreamHandler()
+    console_log_handler.setFormatter(...)
     console_log_handler.setLevel(logging.INFO)
     console_log_handler.addFilter(NoExceptionFilter())
     console_log_handler.setFormatter(logging.Formatter(

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Scrollbar for WebKit Browsers */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4a5568; /* slate-600 */
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #718096; /* slate-500 */
+        }
+    </style>
+    <title>CVE Detail - ThreatScan</title>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+    <header class="my-8 mx-auto w-full max-w-7xl px-4 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-12">
+        </a>
+        <a href="javascript:history.back()" class="bg-fuchsia-500 px-5 py-2 rounded-full hover:bg-fuchsia-600 transition text-white font-semibold shadow-lg">
+            Back to Details
+        </a>
+    </header>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 mb-8">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-fuchsia-400">{{ cve_id }}</h1>
+            <p class="text-lg text-stone-400">Example CVE Title: Remote Code Execution Vulnerability</p>
+        </div>
+
+        <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
+            <div class="prose prose-invert max-w-none">
+                <h2 class="text-2xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mb-4">Description</h2>
+                <p>
+                    This is a placeholder for the detailed description of {{ cve_id }}. 
+                    In a real application, you would fetch this data from a database (like the one populated by cve-search) 
+                    or a live API (like the NVD API).
+                </p>
+
+                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">Affected Software</h3>
+                <ul>
+                    <li>Example Software Version 1.0</li>
+                    <li>Example Software Version 1.1</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">References</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><a href="#" class="text-fuchsia-400 hover:underline">https://example.com/security-advisory-1</a></li>
+                    <li><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ cve_id }}" target="_blank" rel="noopener noreferrer" class="text-fuchsia-400 hover:underline">https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ cve_id }}</a></li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">Mitigation Steps</h3>
+                <p>
+                    1. Upgrade to the latest version of the software.<br>
+                    2. Apply the official security patch.<br>
+                    3. Configure a firewall to block the affected port.
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

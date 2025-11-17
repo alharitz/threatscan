@@ -1,5 +1,14 @@
-# python-dotenv
-# flask
-# openai
-# wmi
+python-dotenv
+flask
+openai
+wmi
+
+# --- Database ---
+psycopg2-binary
+python-dotenv
+
+# --- Collectors ---
 psutil
+
+# --- Core Logic ---
+packaging

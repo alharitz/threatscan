@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Welcome - ThreatScan</title>
+
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+
+    <main class="mt-16 flex-grow flex flex-col justify-center items-center text-center px-4">
+        <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-24 mb-6">
+
+        <h1 class="text-5xl font-bold mb-4">
+            Welcome to <span class="text-fuchsia-400">Threat</span><span class="text-violet-500">scan</span>!
+        </h1>
+
+        <p class="text-lg text-stone-300 mb-8 max-w-2xl">
+            Your local vulnerability scanner. Proactively identify and mitigate software vulnerabilities on your system. Click the 'Start Scan' button below to begin a new scan, or review previous reports from the list of scans.
+        </p>
+
+        <a href="{{ url_for('scan') }}" class="bg-fuchsia-500 px-8 py-3 rounded-full hover:bg-fuchsia-600 transition text-stone-100 font-semibold text-lg shadow-lg">
+            Start New Scan
+        </a>
+
+        <div class="mt-16 w-full max-w-4xl mb-16">
+            <h2 class="text-2xl font-semibold mb-4 text-left">Recent Scans</h2>
+            <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl overflow-hidden">
+                <table class="w-full text-left mb-8">
+                    <thead class="bg-slate-700/50">
+                        <tr>
+                            <th class="p-4">Scan ID</th>
+                            <th class="p-4">Date & Time</th>
+                            <th class="p-4">Vulnerabilities Found</th>
+                            <th class="p-4">Status</th>
+                            <th class="p-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in scan_logs %}
+                        <tr class="border-b border-slate-700/50">
+                            <td class="p-4">#{{ result.scan_id }}</td>
+                            <td class="p-4">{{ result.date_time }}</td>
+                            <td class="p-4">
+                            <span class="font-semibold
+                                {% if result.vuln_count <= 5 %}
+                                    text-green-400
+                                {% elif result.vuln_count <= 10 %}
+                                    text-yellow-400
+                                {% elif result.vuln_count <= 15 %}
+                                    text-orange-400
+                                {% elif result.vuln_count <= 20 %}
+                                    text-red-400
+                                {% else %}
+                                    text-purple-400
+                                {% endif %}
+                            ">
+                                {{ result.vuln_count }}
+                            </span>
+                        </td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full
+                                        {% if result.status %}
+                                            text-green-100 bg-green-500/50
+                                        {% else %}
+                                            text-red-100 bg-red-500/50
+                                        {% endif %}
+                                    ">
+                                    {{ "Success" if result.status else "Failed" }}
+                                </span>
+                            </td>
+                            <td class="p-4">
+                                {% if result.status %}
+                                    <a href="{{ result.report_url }}" class="bg-fuchsia-500 px-3 py-1 rounded-full hover:bg-fuchsia-600 transition text-stone-100 font-semibold text-m shadow-m">
+                                    View Report
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
