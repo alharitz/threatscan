@@ -64,43 +64,106 @@ class ProgramsCollector(BaseCollector):
         return programs_parser.windowsProgramParser(apps, log)
     
     def _collect_linux_programs(self) -> list[dict]:
+        # Debian / Ubuntu family
         if shutil.which("dpkg-query"):
             cmd = "dpkg-query -W -f='${Package}\\t${Version}\\n'"
-
             try:
                 output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
                 return programs_parser.linuxPackageParser(output.stdout, log)
-
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 log.error(f"Failed to collect dpkg packages: '{e}", exc_info=True)
                 return []
 
-        elif shutil.which("rpm"):
-            cmd = "rpm -qa --qf '%{NAME}\\t%{VERSION}-%{RELEASE}\\n'"
-            
+        # RHEL / Fedora / Rocky / AlmaLinux (modern: DNF)
+        elif shutil.which("dnf"):
+            cmd = "dnf list installed | tail -n +2 | awk '{print $1\"\\t\"$2}'"
             try:
                 output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
                 return programs_parser.linuxPackageParser(output.stdout, log)
-            
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect dnf packages: '{e}", exc_info=True)
+                return []
+
+        # RHEL / CentOS (older systems: YUM)
+        elif shutil.which("yum"):
+            cmd = "yum list installed | tail -n +2 | awk '{print $1\"\\t\"$2}'"
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return programs_parser.linuxPackageParser(output.stdout, log)
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect yum packages: '{e}", exc_info=True)
+                return []
+
+        # OpenSUSE family (zypper)
+        elif shutil.which("zypper"):
+            # OpenSUSE is RPM-based, so we can use rpm directly for reliable parsing
+            cmd = "rpm -qa --qf '%{NAME}\\t%{VERSION}-%{RELEASE}\\n'"
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return programs_parser.linuxPackageParser(output.stdout, log)
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect zypper packages via rpm: '{e}", exc_info=True)
+                return []
+
+        # Generic RPM-based fallback
+        elif shutil.which("rpm"):
+            cmd = "rpm -qa --qf '%{NAME}\\t%{VERSION}-%{RELEASE}\\n'"
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                return programs_parser.linuxPackageParser(output.stdout, log)
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 log.error(f"Failed to collect rpm packages: '{e}", exc_info=True)
                 return []
 
+        # Arch Linux family
         elif shutil.which("pacman"):
             cmd = 'pacman -Q --qf "%n\\t%v"'
-            
             try:
                 output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
                 return programs_parser.linuxPackageParser(output.stdout, log)
-            
             except (subprocess.CalledProcessError, FileNotFoundError) as e:
                 log.error(f"Failed to collect pacman packages: '{e}", exc_info=True)
                 return []
 
+        # Alpine Linux family
+        elif shutil.which("apk"):
+            cmd = "apk info -v"
+            try:
+                output = subprocess.run(cmd, shell=True, capture_output=True, text=True, check=True)
+                lines = output.stdout.splitlines()
+                normalized_lines = []
+                import re
+                pattern = re.compile(r'^(?P<name>.+?)-(?P<version>\d.*)$')
+                for ln in lines:
+                    ln = ln.strip()
+                    if not ln:
+                        continue
+                    m = pattern.match(ln)
+                    if m:
+                        name = m.group('name')
+                        ver = m.group('version')
+                    else:
+                        if '-' in ln:
+                            idx = ln.rfind('-')
+                            name = ln[:idx]
+                            ver = ln[idx + 1:]
+                        else:
+                            name = ln
+                            ver = ""
+                    normalized_lines.append(f"{name}\t{ver}")
+                normalized_output = "\n".join(normalized_lines) + ("\n" if normalized_lines else "")
+                return programs_parser.linuxPackageParser(normalized_output, log)
+            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                log.error(f"Failed to collect apk packages: '{e}", exc_info=True)
+                return []
+
+        # Unknown / unsupported system
         else:
-            log.warning("Could not detect a known pacakage manager(dpg, rpm, pacman).")
+            log.warning("Could not detect a known package manager (dpkg, dnf, yum, zypper, rpm, pacman, apk).")
             return []
-            
+
+
+
     def _collect_macos_programs(self) -> list[dict]:
         cmd = ["system_profiler", "SPApplicationsDataType", "-json"]
         

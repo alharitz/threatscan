@@ -64,7 +64,7 @@ def home():
         results.append({
             "scan_id": scan_log['scan_id'],
             "date_time": scan_log['date_time'],
-            "vuln_count": scan_log['vuln_count'],
+            "vuln_count": scan_log.get('vuln_count', 0),
             "status": scan_log['status'],
             "report_url": "/result/" + str(scan_log['scan_id'])
         })

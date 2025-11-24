@@ -2,7 +2,7 @@ import os
 import pytest
 import json
 from collections import Counter
-from collectors import ProgramsCollector
+from collectors.system.programs_collector import ProgramsCollector
 from utils.logger import setup_logger
 
 log = setup_logger()
