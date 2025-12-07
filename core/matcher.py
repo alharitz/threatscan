@@ -40,8 +40,10 @@ class Matcher:
             return True
             
         except InvalidVersion:
+            log.debug(f"Invalid version string '{software_version_str}': {e}")
             return False
         except TypeError:
+            log.debug(f"Type Error in version comparison: {e}")
             return False
 
     def find_vulnerabilities(self, software_list: list[dict]) -> list[dict]:
@@ -57,19 +59,10 @@ class Matcher:
         try:
             conn = self.db_pool.getconn()
             cur = conn.cursor(cursor_factory=DictCursor)
+
+            software_dict = {item['normalized_name']: item for item in software_list}
+            search_patterns = [f'%{name}%' for name in software_dict.keys()]
             
-            search_terms = list(set(
-                item['normalized_name'] for item in software_list
-            ))
-            
-            # Query ini gabungin cpe_entries dan cve_cpe_entries!
-            # Ini nyari semua 'aturan' (CVE-CPE match) yang 'product'-nya
-            # mirip sama software yang kita scan.
-            
-            # Kita ambil product dari cpe_entries biar bisa ILIKE
-            # Terus kita JOIN ke cve_cpe_entries
-            
-            # NOTE: Ini bisa di-improve lagi, tapi ini awal yg bagus
             query = """
                 SELECT
                     e.product, e.cpe23uri,
@@ -84,27 +77,30 @@ class Matcher:
                     e.product ILIKE ANY(%s);
             """
             
-            cur.execute(query, (search_terms,))
+            cur.execute(query, (search_patterns,))
             all_matching_rules = cur.fetchall()
             
             log.info(f"Found {len(all_matching_rules)} potential vulnerability rules...")
             
             all_found_cve_ids = set()
-
-            software_dict = {item['normalized_name']: item for item in software_list}
-
             vulnerability_map = {item['normalized_name']: set() for item in software_list}
 
             for rule in all_matching_rules:
-                db_product_name = rule['product'].lower()
+                db_product_name_raw = rule['product']
+                
+                found_match = None
+                for normalized_sw_name, sw_item in software_dict.items():
+                    if normalized_sw_name in db_product_name_raw.lower():
+                        found_match = normalized_sw_name
+                        break
 
-                if db_product_name in software_dict:
-                    sw_item = software_dict[db_product_name]
+                if found_match:
+                    sw_item = software_dict[found_match]
                     sw_version = sw_item['normalized_version']
 
                     if self._is_version_vulnerable(sw_version, rule):
                         log.debug(f"MATCH! {sw_item['name']} {sw_version} is vulnerable to {rule['cve_id']}")
-                        vulnerability_map[db_product_name].add(rule['cve_id'])
+                        vulnerability_map[found_match].add(rule['cve_id'])
                         all_found_cve_ids.add(rule['cve_id'])
 
             log.info(f"Found {len(all_found_cve_ids)} unique CVEs.")
