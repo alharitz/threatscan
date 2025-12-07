@@ -27,7 +27,11 @@ class Matcher:
             has_end = rule.get("version_end_including") or rule.get("version_end_excluding")
 
             if not has_start and not has_end:
-                return False
+                cpe_uri = rule.get("cpe23uri", "")
+                if software_version_str in cpe_uri:
+                    return True
+                else:
+                    return False
 
             start_incl = rule.get("version_start_including")
             start_excl = rule.get("version_start_excluding")
