@@ -71,17 +71,22 @@ class Matcher:
             
             # NOTE: Ini bisa di-improve lagi, tapi ini awal yg bagus
             query = """
+                WITH matching_cpes AS (
+                    SELECT cpe23uri
+                    FROM cpe_entries
+                    WHERE product ILIKE ANY(%s)
+                )
                 SELECT
                     e.product, e.cpe23uri,
                     m.cve_id, m.vulnerable,
                     m.version_start_including, m.version_start_excluding,
                     m.version_end_including, m.version_end_excluding
                 FROM
-                    cpe_entries e
+                    matching_cpes mc
                 JOIN
-                    cve_cpe_entries m ON e.cpe23uri = m.cpe_uri
-                WHERE
-                    e.product ILIKE ANY(%s);
+                    cve_cpe_entries m ON mc.cpe23uri = m.cpe_uri
+                JOIN
+                    cpe_entries e ON mc.cpe23uri = e.cpe23uri;
             """
             
             cur.execute(query, (search_terms,))

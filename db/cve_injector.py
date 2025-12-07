@@ -68,19 +68,25 @@ def row_from_cve(item):
     desc_en = next((d["value"] for d in descriptions if d["lang"] == "en"), None)
 
     metrics = item.get("metrics", {})
-    cvss_v3 = (metrics.get("cvssMetricV31") or [{}])[0].get("cvssData", {})
-    cvss_v2 = (metrics.get("cvssMetricV2") or [{}])[0].get("cvssData", {})
+
+    cvss_v3_metrics = metrics.get("cvssMetricV31") or metrics.get("cvssMetricV30")
+    cvss_v3_data = (cvss_v3_metrics or [{}])[0].get("cvssData", {})
+    cvss_v3_base_score = cvss_v3_data.get("baseScore")
+    base_severity = (cvss_v3_metrics or [{}])[0].get("baseSeverity")
+
+    cvss_v2_metrics = metrics.get("cvssMetricV2")
+    cvss_v2_data = (cvss_v2_metrics or [{}])[0].get("cvssData", {})
 
     return (
         cve_id,
         item.get("cve", {}).get("sourceIdentifier", "NVD"),
         desc_en.split('.')[0] if desc_en else None,        # summary
         desc_en,
-        cvss_v3.get("baseSeverity"),
-        cvss_v3.get("baseScore"),
-        cvss_v3.get("vectorString"),
-        cvss_v2.get("baseScore"),
-        cvss_v2.get("vectorString"),
+        base_severity,
+        cvss_v3_base_score,
+        cvss_v3_data.get("vectorString"),
+        cvss_v2_data.get("baseScore"),
+        cvss_v2_data.get("vectorString"),
         item.get("published"),
         item.get("lastModified"),
         item.get("vulnStatus"),
