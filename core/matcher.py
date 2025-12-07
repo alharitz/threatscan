@@ -23,18 +23,24 @@ class Matcher:
         try:
             software_version = Version(software_version_str)
 
-            if rule.get("version_start_including"):
-                if software_version < Version(rule["version_start_including"]):
+            start_incl = rule.get("version_start_including")
+            start_excl = rule.get("version_start_excluding")
+
+            if start_incl:
+                if software_version < Version(start_incl):
                     return False
-            elif rule.get("version_start_excluding"):
-                if software_version <= Version(rule["version_start_excluding"]):
+            elif start_excl:
+                if software_version <= Version(start_excl):
                     return False
 
-            if rule.get("version_end_including"):
-                if software_version > Version(rule["version_end_including"]):
+            end_incl = rule.get("version_end_including")
+            end_excl = rule.get("version_end_excluding")
+
+            if end_incl:
+                if software_version > Version(end_incl):
                     return False
-            elif rule.get("version_end_excluding"):
-                if software_version >= Version(rule["version_end_excluding"]):
+            elif end_excl:
+                if software_version >= Version(end_excl):
                     return False
 
             return True
@@ -42,6 +48,9 @@ class Matcher:
         except InvalidVersion:
             return False
         except TypeError:
+            return False
+        except ValueError as e:
+            log.warning(f"Error parsing version string in rule: {e}")
             return False
 
     def find_vulnerabilities(self, software_list: list[dict]) -> list[dict]:
