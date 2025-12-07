@@ -102,7 +102,7 @@ class Matcher:
 
             for rule in all_matching_rules:
                 for sw_name in software_dict:
-                    if sw_name in rule['product']:
+                    if sw_name == rule['product']:
                         
                         sw_item = software_dict[sw_name]
                         sw_version = sw_item['normalized_version']
