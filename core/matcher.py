@@ -23,6 +23,12 @@ class Matcher:
         try:
             software_version = Version(software_version_str)
 
+            has_start = rule.get("version_start_including") or rule.get("version_start_excluding")
+            has_end = rule.get("version_end_including") or rule.get("version_end_excluding")
+
+            if not has_start and not has_end:
+                return True
+
             start_incl = rule.get("version_start_including")
             start_excl = rule.get("version_start_excluding")
 
