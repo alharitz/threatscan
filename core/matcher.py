@@ -59,7 +59,7 @@ class Matcher:
             cur = conn.cursor(cursor_factory=DictCursor)
             
             search_terms = list(set(
-                item['normalized_name'] for item in software_list
+                f"%{item['normalized_name']}%" for item in software_list
             ))
             
             # Query ini gabungin cpe_entries dan cve_cpe_entries!
@@ -96,16 +96,16 @@ class Matcher:
             vulnerability_map = {item['normalized_name']: set() for item in software_list}
 
             for rule in all_matching_rules:
-                db_product_name = rule['product'].lower()
+                for sw_name in software_dict:
+                    if sw_name in rule['product']:
+                        
+                        sw_item = software_dict[sw_name]
+                        sw_version = sw_item['normalized_version']
 
-                if db_product_name in software_dict:
-                    sw_item = software_dict[db_product_name]
-                    sw_version = sw_item['normalized_version']
-
-                    if self._is_version_vulnerable(sw_version, rule):
-                        log.debug(f"MATCH! {sw_item['name']} {sw_version} is vulnerable to {rule['cve_id']}")
-                        vulnerability_map[db_product_name].add(rule['cve_id'])
-                        all_found_cve_ids.add(rule['cve_id'])
+                        if self._is_version_vulnerable(sw_version, rule):
+                            log.debug(f"MATCH! {sw_name} {sw_version} is vulnerable to {rule['cve_id']}")
+                            vulnerability_map[sw_name].add(rule['cve_id'])
+                            all_found_cve_ids.add(rule['cve_id'])
 
             log.info(f"Found {len(all_found_cve_ids)} unique CVEs.")
             
