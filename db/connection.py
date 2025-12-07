@@ -22,6 +22,9 @@ def init_db_pool():
         log.warning("Database pool already initialized.")
         return
 
+    QUERY_TIMEOUT_MS = 60000
+    PG_OPTIONS = f"-c statement_timeout={QUERY_TIMEOUT_MS}"
+
     try:
         _db_pool = pool.SimpleConnectionPool(
             1, 5, 
@@ -29,7 +32,8 @@ def init_db_pool():
             port = int(os.getenv("PGPORT", 5432)),
             dbname = os.getenv("PGDATABASE"),
             user = os.getenv("PGUSER"),
-            password = os.getenv("PGPASSWORD")
+            password = os.getenv("PGPASSWORD"),
+            options = PG_OPTIONS
         )
         log.info("Database connection pool initialized (Min: 1, Max: 5).")
         
