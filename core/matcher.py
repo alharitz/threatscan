@@ -5,6 +5,11 @@ from db.connection import get_db_connection
 import psycopg2.pool
 from psycopg2.extras import DictCursor
 from packaging.version import Version, InvalidVersion
+from typing import List, Dict, Set, Tuple, Any
+
+import re
+import os
+import time
 
 log = setup_logger()
 log = log.getChild("matcher")
@@ -12,159 +17,177 @@ log = log.getChild("matcher")
 class Matcher:
     def __init__(self, db_pool: psycopg2.pool.SimpleConnectionPool = None):
         """
-        Init matcher with pool
+        Initializes the Matcher.
+        1. Sets up the DB connection.
+        2. Pre-loads known vendors into memory to make parsing smarter/faster.
         """
         self.db_pool = db_pool or get_db_connection()
         if not self.db_pool:
             log.error("Failed to initialize database connection pool.")
             raise ConnectionError("Database pool could not be initialized.")
+        
+        # Pre-load vendors to help distinguish "Adobe Reader" -> Vendor: Adobe
+        self.known_vendors = self._load_known_vendors()
 
-    def _is_version_vulnerable(self, software_version_str: str, rule: dict) -> bool:
-        try:
-            software_version = Version(software_version_str)
-
-            has_start = rule.get("version_start_including") or rule.get("version_start_excluding")
-            has_end = rule.get("version_end_including") or rule.get("version_end_excluding")
-
-            if not has_start and not has_end:
-                cpe_uri = rule.get("cpe23uri", "")
-                if software_version_str in cpe_uri:
-                    return True
-                else:
-                    return False
-
-            start_incl = rule.get("version_start_including")
-            start_excl = rule.get("version_start_excluding")
-
-            if start_incl:
-                if software_version < Version(start_incl):
-                    return False
-            elif start_excl:
-                if software_version <= Version(start_excl):
-                    return False
-
-            end_incl = rule.get("version_end_including")
-            end_excl = rule.get("version_end_excluding")
-
-            if end_incl:
-                if software_version > Version(end_incl):
-                    return False
-            elif end_excl:
-                if software_version >= Version(end_excl):
-                    return False
-
-            return True
-            
-        except InvalidVersion:
-            return False
-        except TypeError:
-            return False
-        except ValueError as e:
-            log.warning(f"Error parsing version string in rule: {e}")
-            return False
-
-    def find_vulnerabilities(self, software_list: list[dict]) -> list[dict]:
-        """
-        Fungsi utama: Menerima list software, mengembalikan list
-        yang sama tapi udah ditambahin key 'vulnerabilities'.
-        """
-        if not software_list:
-            log.warning("Software list is empty, nothing to match.")
-            return []
-            
+    def _load_known_vendors(self) -> Set[str]:
+        """Fetch unique vendors from DB to assist in name splitting."""
+        vendors = set()
         conn = None
         try:
             conn = self.db_pool.getconn()
-            cur = conn.cursor(cursor_factory=DictCursor)
-            
-            search_terms = list(set(
-                f"%{item['normalized_name']}%" for item in software_list
-            ))
-            
-            # Query ini gabungin cpe_entries dan cve_cpe_entries!
-            # Ini nyari semua 'aturan' (CVE-CPE match) yang 'product'-nya
-            # mirip sama software yang kita scan.
-            
-            # Kita ambil product dari cpe_entries biar bisa ILIKE
-            # Terus kita JOIN ke cve_cpe_entries
-            
-            # NOTE: Ini bisa di-improve lagi, tapi ini awal yg bagus
-            query = """
-                WITH matching_cpes AS (
-                    SELECT cpe23uri
-                    FROM cpe_entries
-                    WHERE product ILIKE ANY(%s)
-                )
-                SELECT
-                    e.product, e.cpe23uri,
-                    m.cve_id, m.vulnerable,
-                    m.version_start_including, m.version_start_excluding,
-                    m.version_end_including, m.version_end_excluding
-                FROM
-                    matching_cpes mc
-                JOIN
-                    cve_cpe_entries m ON mc.cpe23uri = m.cpe_uri
-                JOIN
-                    cpe_entries e ON mc.cpe23uri = e.cpe23uri;
-            """
-            
-            cur.execute(query, (search_terms,))
-            all_matching_rules = cur.fetchall()
-            
-            log.info(f"Found {len(all_matching_rules)} potential vulnerability rules...")
-            
-            all_found_cve_ids = set()
+            with conn.cursor() as cur:
+                # Based on your image: cpe_entries has a 'vendor' column
+                cur.execute("SELECT DISTINCT vendor FROM cpe_entries WHERE vendor IS NOT NULL")
+                for row in cur.fetchall():
+                    if row[0]:
+                        vendors.add(row[0].lower().strip())
+            log.info(f"Loaded {len(vendors)} unique vendors for fuzzy matching.")
+        except Exception as e:
+            log.warning(f"Failed to load vendors: {e}")
+        finally:
+            if conn: self.db_pool.putconn(conn)
+        return vendors
 
-            software_dict = {item['normalized_name']: item for item in software_list}
+    def _extract_metadata(self, raw_name: str) -> Tuple[str, str]:
+        """
+        Heuristic: Splits 'Microsoft VSCode' into ('microsoft', 'vscode').
+        Returns: (vendor_guess, product_guess)
+        """
+        if not raw_name:
+            return "%", "%"
 
-            vulnerability_map = {item['normalized_name']: set() for item in software_list}
+        # 1. Clean String: Lowercase, remove brackets, keep only alphanumeric + _
+        clean = re.sub(r'[\(\[\{].*[\)\]\}]', '', raw_name).strip().lower()
+        clean = re.sub(r'[^a-z0-9_ ]', '', clean)
+        clean = clean.replace(' ', '_').replace('-', '_').strip('_')
+        
+        parts = clean.split('_')
+        
+        # 2. Smart Vendor Detection
+        # Check first 1-3 words to see if they match a known vendor
+        for i in range(1, min(4, len(parts) + 1)):
+            candidate = "_".join(parts[:i])
+            if candidate in self.known_vendors:
+                vendor = candidate
+                product = "_".join(parts[i:])
+                # Ensure product isn't empty (e.g. if raw_name was just "Microsoft")
+                if not product: product = "%"
+                else: product = product + "%" # Add wildcard for fuzzy match
+                return vendor, product
 
-            for rule in all_matching_rules:
-                for sw_name in software_dict:
-                    if sw_name == rule['product']:
-                        
-                        sw_item = software_dict[sw_name]
-                        sw_version = sw_item['normalized_version']
+        # 3. Fallback: If no vendor found, assume the whole string is the product
+        # and we will search ALL vendors.
+        return "%", clean + "%"
 
-                        if self._is_version_vulnerable(sw_version, rule):
-                            log.debug(f"MATCH! {sw_name} {sw_version} is vulnerable to {rule['cve_id']}")
-                            vulnerability_map[sw_name].add(rule['cve_id'])
-                            all_found_cve_ids.add(rule['cve_id'])
+    def _is_version_vulnerable(self, scanned_ver_str: str, rule: Dict) -> bool:
+        """
+        Compares scanned version against the CVE range rules.
+        """
+        try:
+            # Clean up version string (e.g., remove 'v' prefix if present)
+            clean_ver = scanned_ver_str.lstrip('v')
+            v_scanned = Version(clean_ver)
+        except (InvalidVersion, TypeError):
+            # If version is garbage (e.g. "Unknown"), we can't mathematically compare it.
+            return False
 
-            log.info(f"Found {len(all_found_cve_ids)} unique CVEs.")
+        # Extract rules from the DB row (keys match aliases in SQL query)
+        start_incl = rule.get('v_start_inc')
+        start_excl = rule.get('v_start_exc')
+        end_incl = rule.get('v_end_inc')
+        end_excl = rule.get('v_end_exc')
+
+        try:
+            # Logic: If a rule exists, we must satisfy it.
+            if start_incl and v_scanned < Version(start_incl): return False
+            if start_excl and v_scanned <= Version(start_excl): return False
+            if end_incl and v_scanned > Version(end_incl): return False
+            if end_excl and v_scanned >= Version(end_excl): return False
             
-            cve_details_map = {}
-            if all_found_cve_ids:
-                query_details = """
-                    SELECT cve_id, summary, base_severity, cvss_v3_base_score
-                    FROM cve_entries
-                    WHERE cve_id IN %s;
-                """
-                cur.execute(query_details, (tuple(all_found_cve_ids),))
-                cve_details_list = cur.fetchall()
+            # If we survived all checks, it's a match!
+            return True
+        except (InvalidVersion, TypeError):
+            # If the database contains bad version data, skip this rule safely
+            return False
+
+    def find_vulnerabilities(self, software_list: List[Dict]) -> List[Dict]:
+        """
+        Main Function:
+        1. Groups software by product to reduce DB queries.
+        2. Fetches potential CVEs from DB.
+        3. Filters locally by version.
+        """
+        if not software_list:
+            return []
+
+        log.info(f"⚡ Analyzing {len(software_list)} items against Local Database...")
+
+        # --- Step A: Grouping ---
+        # We group items so if you have 10 versions of "Java", we only query the DB once for "Java".
+        # Map: (vendor_guess, product_guess) -> List of indices in software_list
+        grouped_items = {} 
+        for idx, item in enumerate(software_list):
+            v_guess, p_guess = self._extract_metadata(item['normalized_name'])
+            key = (v_guess, p_guess)
+            if key not in grouped_items:
+                grouped_items[key] = []
+            grouped_items[key].append(idx)
+
+        conn = None
+        try:
+            conn = self.db_pool.getconn()
+            with conn.cursor(cursor_factory=DictCursor) as cur:
                 
-                for cve in cve_details_list:
-                    cve_details_map[cve['cve_id']] = dict(cve)
-            
-            final_results_list = []
-            for item in software_list:
-                sw_name = item['normalized_name']
-                found_cves = vulnerability_map.get(sw_name, set())
-                
-                item['vulnerabilities'] = []
-                
-                for cve_id in found_cves:
-                    if cve_id in cve_details_map:
-                        item['vulnerabilities'].append(cve_details_map[cve_id])
-                
-                final_results_list.append(item)
-            
-            return final_results_list
+                # --- Step B: Batch Querying ---
+                for (vendor_param, product_param), indices in grouped_items.items():
+                    
+                    # 1. The MASTER Query
+                    # Matches the columns from your uploaded images exactly.
+                    query = """
+                        SELECT 
+                            m.cve_id,
+                            m.version_start_including as v_start_inc,
+                            m.version_start_excluding as v_start_exc,
+                            m.version_end_including as v_end_inc,
+                            m.version_end_excluding as v_end_exc,
+                            c.summary,
+                            c.cvss_v3_base_score as severity,
+                            c.base_severity as severity_level
+                        FROM cpe_entries e
+                        JOIN cve_cpe_entries m ON e.cpe23uri = m.cpe_uri
+                        JOIN cve_entries c ON m.cve_id = c.cve_id
+                        WHERE 
+                            (e.vendor = %s OR %s = '%%') -- Match vendor OR wildcard
+                            AND e.product ILIKE %s       -- Match product (fuzzy)
+                    """
+                    
+                    cur.execute(query, (vendor_param, vendor_param, product_param))
+                    potential_cves = cur.fetchall()
+
+                    # --- Step C: Python Version Filtering ---
+                    if potential_cves:
+                        for idx in indices:
+                            item = software_list[idx]
+                            
+                            if 'vulnerabilities' not in item:
+                                item['vulnerabilities'] = []
+                            
+                            # Check every potential CVE against this specific item's version
+                            for cve_row in potential_cves:
+                                if self._is_version_vulnerable(item['normalized_version'], cve_row):
+                                    # Deduplication check
+                                    if not any(v['cve_id'] == cve_row['cve_id'] for v in item['vulnerabilities']):
+                                        item['vulnerabilities'].append({
+                                            "cve_id": cve_row['cve_id'],
+                                            "summary": cve_row['summary'],
+                                            "score": float(cve_row['severity']) if cve_row['severity'] else 0.0,
+                                            "base_severity": cve_row['severity_level'],
+                                            "status": "Analyzed"
+                                        })
 
         except Exception as e:
-            log.error(f"Error during matching: {e}", exc_info=True)
-            return software_list
-        
+            log.error(f"Error during matching process: {e}", exc_info=True)
         finally:
-            if conn:
-                self.db_pool.putconn(conn)
+            if conn: self.db_pool.putconn(conn)
+
+        return software_list

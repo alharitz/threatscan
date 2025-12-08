@@ -63,38 +63,60 @@ INSERT_SQL = """
 """
 
 def row_from_cve(item):
-    cve_id = item["cve"]["id"]
-    descriptions = item["cve"].get("descriptions", [])
+    cve_data = item.get("cve", {})    
+    cve_id = cve_data.get("id")
+
+    # 1. Get Description
+    descriptions = cve_data.get("descriptions", [])
     desc_en = next((d["value"] for d in descriptions if d["lang"] == "en"), None)
 
-    metrics = item.get("metrics", {})
+    # 2. Get Metrics (Fixed logic)
+    metrics = cve_data.get("metrics", {})
 
+    # Handle V3.1 or V3.0
     cvss_v3_metrics = metrics.get("cvssMetricV31") or metrics.get("cvssMetricV30")
-    cvss_v3_data = (cvss_v3_metrics or [{}])[0].get("cvssData", {})
-    cvss_v3_base_score = cvss_v3_data.get("baseScore")
-    base_severity = (cvss_v3_metrics or [{}])[0].get("baseSeverity")
+    if cvss_v3_metrics:
+        # Usually a list, take the first element
+        v3_data = cvss_v3_metrics[0].get("cvssData", {})
+        cvss_v3_base_score = v3_data.get("baseScore")
+        cvss_v3_vector = v3_data.get("vectorString")
+        base_severity = v3_data.get("baseSeverity")
+    else:
+        cvss_v3_base_score = None
+        cvss_v3_vector = None
+        base_severity = None
 
+    # Handle V2
     cvss_v2_metrics = metrics.get("cvssMetricV2")
-    cvss_v2_data = (cvss_v2_metrics or [{}])[0].get("cvssData", {})
+    if cvss_v2_metrics:
+        v2_data = cvss_v2_metrics[0].get("cvssData", {})
+        cvss_v2_base_score = v2_data.get("baseScore")
+        cvss_v2_vector = v2_data.get("vectorString")
+
+        if not base_severity:
+            base_severity = cvss_v2_metrics[0].get("baseSeverity")
+    else:
+        cvss_v2_base_score = None
+        cvss_v2_vector = None
 
     return (
         cve_id,
-        item.get("cve", {}).get("sourceIdentifier", "NVD"),
-        desc_en.split('.')[0] if desc_en else None,        # summary
+        cve_data.get("sourceIdentifier", "NVD"),
+        desc_en.split('.')[0] if desc_en else None, 
         desc_en,
         base_severity,
         cvss_v3_base_score,
-        cvss_v3_data.get("vectorString"),
-        cvss_v2_data.get("baseScore"),
-        cvss_v2_data.get("vectorString"),
-        item.get("published"),
-        item.get("lastModified"),
-        item.get("vulnStatus"),
-        item.get("cve", {}).get("sourceIdentifier"),
-        json.dumps(item.get("weaknesses", [])),
-        json.dumps(item.get("remediations", [])),
-        json.dumps(item.get("references", [])),
-        json.dumps(item),
+        cvss_v3_vector,
+        cvss_v2_base_score,
+        cvss_v2_vector,
+        cve_data.get("published"),
+        cve_data.get("lastModified"),
+        cve_data.get("vulnStatus"),
+        cve_data.get("sourceIdentifier"),
+        json.dumps(cve_data.get("weaknesses", [])),
+        json.dumps(cve_data.get("remediations", [])), # Note: Remediations often not in standard NVD JSON, but kept if custom
+        json.dumps(cve_data.get("references", [])),
+        json.dumps(cve_data), # Save the inner cve object as raw data
     )
 
 def process_file(cur, filepath):
