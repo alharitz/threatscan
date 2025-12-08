@@ -105,7 +105,7 @@ class CveDetailProvider:
                 # B. Get Affected Software with RANGES
                 # We fetch the specific version rules
                 query_soft = """
-                    SELECT DISTINCT e.vendor, e.product, 
+                    SELECT DISTINCT e.vendor, e.product, e.version, e.part,
                            m.version_start_including, m.version_start_excluding,
                            m.version_end_including, m.version_end_excluding
                     FROM cve_cpe_entries m
@@ -121,20 +121,30 @@ class CveDetailProvider:
                 for r in soft_rows:
                     name = f"{r['vendor']} {r['product']}"
                     
-                    # Build a human-readable range string
+                    # 1. Build Range Rules
                     rules = []
                     if r['version_start_including']: rules.append(f">= {r['version_start_including']}")
                     if r['version_start_excluding']: rules.append(f"> {r['version_start_excluding']}")
                     if r['version_end_including']:   rules.append(f"<= {r['version_end_including']}")
                     if r['version_end_excluding']:   rules.append(f"< {r['version_end_excluding']}")
                     
-                    range_str = " AND ".join(rules) if rules else "All versions"
+                    # 2. Determine Display String
+                    if rules:
+                        # Case A: We have a range (e.g. "< 2.52")
+                        range_str = " AND ".join(rules)
+                    elif r['version'] and r['version'] not in ['*', '-']:
+                        # Case B: Exact Match (e.g. "2.51.0")
+                        range_str = f"Exact Version: {r['version']}"
+                    else:
+                        # Case C: Actually affects all versions (or data missing)
+                        range_str = "All versions"
                     
                     affected_list.append({
                         "name": name,
-                        "range": range_str
+                        "range": range_str,
+                        "type": r['part']
                     })
-
+                
                 return {
                     "cve_id": row['cve_id'],
                     "description": row['details'] or row['summary'],
@@ -142,7 +152,6 @@ class CveDetailProvider:
                     "severity": row['base_severity'],
                     "published_at": row['published_at'],
                     "references": refs,
-                    # 🌟 This key is now consistently used
                     "affected_software": affected_list 
                 }
         finally:
@@ -153,30 +162,48 @@ class CveDetailProvider:
         
         description = data['description']
         
-        # 🌟 FIX: Handle list of dicts, not list of strings
-        # We extract just the 'name' field for the AI context
-        soft_list_names = [item['name'] for item in data['affected_software'][:5]]
+        # Extract software names safely
+        soft_list_names = []
+        if data.get('affected_software'):
+             soft_list_names = [item['name'] for item in data['affected_software'][:5]]
         soft_preview = ", ".join(soft_list_names)
 
         # 1. System Prompt
         system_prompt = """
-        You are a cybersecurity expert. Your goal is to explain vulnerabilities to non-technical users.
-        You must output ONLY valid JSON. No markdown, no conversational text.
-        The JSON schema must be:
+        You are a smart cybersecurity consultant helping a regular user fix a specific vulnerability.
+        
+        YOUR GOAL:
+        Provide concrete, actionable steps to fix the issue. Do not be vague.
+
+        RULES:
+        1. **Be Specific**: If the issue is about "NTP" or "WireGuard", mention them explicitly. Do not hide the software name.
+        2. **Explain Simply**: If you use a technical term, explain it in parentheses or a short sentence.
+           - BAD: "Disable unauthenticated NTP." (Too hard)
+           - BAD: "Fix your clock settings." (Too vague)
+           - GOOD: "Disable unauthenticated NTP (Network Time Protocol) to prevent attackers from manipulating your system clock."
+        3. **Prioritize Updates**: If a software update fixes it, that is always Step 1.
+        
+        OUTPUT FORMAT (JSON ONLY):
         {
-            "title": "Short catchy title (max 6 words)",
-            "mitigation": ["Step 1", "Step 2", "Step 3"]
+            "title": "Action-Oriented Title (Max 6 words)",
+            "mitigation": [
+                "Step 1: Specific action (Why it helps)",
+                "Step 2: Specific action (Why it helps)",
+                "Step 3: Verification step"
+            ]
         }
         """
 
         # 2. User Prompt
         user_prompt = f"""
-        Analyze this vulnerability:
-        ID: {data['cve_id']}
-        Context: {description}
-        Affected Apps: {soft_preview}
+        Vulnerability Analysis Request:
         
-        Provide the title and 3 mitigation steps in JSON.
+        Software: {soft_preview}
+        CVE ID: {data['cve_id']}
+        Technical Description: {description}
+        
+        Task: Provide 3 specific steps to fix or mitigate this. 
+        Focus on what the user needs to click, update, or change.
         """
         
         # 3. Call Ollama
@@ -190,4 +217,7 @@ class CveDetailProvider:
             return json.loads(json_response_str)
         except json.JSONDecodeError:
             log.warning(f"Ollama returned invalid JSON: {json_response_str}")
-            return {"title": "Security Alert", "mitigation": ["Check vendor updates manually."]}
+            return {
+                "title": "Update Required", 
+                "mitigation": ["Update your software immediately.", "Contact IT support.", "Monitor for strange behavior."]
+            }
