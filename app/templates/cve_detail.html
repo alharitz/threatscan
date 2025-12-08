@@ -1,73 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/logo.png') }}">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom Scrollbar for WebKit Browsers */
+        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 */
+            background: #1e293b;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4a5568; /* slate-600 */
+            background: #4a5568;
             border-radius: 4px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #718096; /* slate-500 */
+            background: #718096;
+        }
+
+        /* Glassmorphism for the AI Card */
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #e879f9, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
-    <title>CVE Detail - ThreatScan</title>
+    <title>{{ cve.cve_id }} - ThreatScan</title>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+
+<body
+    class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen custom-scrollbar">
+
     <header class="my-8 mx-auto w-full max-w-7xl px-4 flex justify-between items-center">
-        <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
-            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-12">
+        <a href="{{ url_for('home') }}" class="flex items-center space-x-2 group">
+            <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo"
+                class="h-12 group-hover:scale-105 transition-transform">
         </a>
-        <a href="javascript:history.back()" class="bg-fuchsia-500 px-5 py-2 rounded-full hover:bg-fuchsia-600 transition text-white font-semibold shadow-lg">
-            Back to Details
+        <a href="javascript:history.back()"
+            class="bg-slate-700/50 border border-slate-600 px-5 py-2 rounded-full hover:bg-slate-600 transition text-white font-semibold shadow-lg flex items-center gap-2">
+            <span>←</span> Back
         </a>
     </header>
 
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 mb-8">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-fuchsia-400">{{ cve_id }}</h1>
-            <p class="text-lg text-stone-400">Example CVE Title: Remote Code Execution Vulnerability</p>
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 mb-12">
+
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <span class="px-4 py-1 rounded-full text-sm font-bold shadow-lg uppercase tracking-wide border border-white/10
+                    {% if cve.severity == 'CRITICAL' %}bg-purple-600/80 text-white shadow-purple-900/50
+                    {% elif cve.severity == 'HIGH' %}bg-red-600/80 text-white shadow-red-900/50
+                    {% elif cve.severity == 'MEDIUM' %}bg-orange-500/80 text-white shadow-orange-900/50
+                    {% elif cve.severity == 'LOW' %}bg-yellow-500/80 text-black shadow-yellow-900/50
+                    {% else %}bg-slate-600/80 text-white{% endif %}">
+                    {{ cve.severity or 'UNKNOWN' }}
+                </span>
+                {% if cve.score %}
+                <span
+                    class="px-4 py-1 rounded-full text-sm font-bold bg-slate-800/50 border border-slate-600 text-slate-300">
+                    CVSS: {{ cve.score }}
+                </span>
+                {% endif %}
+            </div>
+
+            <h1 class="text-5xl font-bold text-white tracking-tight mb-4">{{ cve.cve_id }}</h1>
+
+            {% if cve.title and cve.title != "Analysis Unavailable" %}
+            <h2 class="text-2xl font-medium text-gradient max-w-3xl mx-auto">{{ cve.title }}</h2>
+            {% endif %}
+
+            <p class="text-slate-400 mt-4 text-sm">Published: {{ cve.published_date }}</p>
         </div>
 
-        <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl p-8">
-            <div class="prose prose-invert max-w-none">
-                <h2 class="text-2xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mb-4">Description</h2>
-                <p>
-                    This is a placeholder for the detailed description of {{ cve_id }}. 
-                    In a real application, you would fetch this data from a database (like the one populated by cve-search) 
-                    or a live API (like the NVD API).
-                </p>
+        {% if user_info.version %}
+        <div
+            class="bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 mb-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+            </div>
 
-                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">Affected Software</h3>
-                <ul>
-                    <li>Example Software Version 1.0</li>
-                    <li>Example Software Version 1.1</li>
-                </ul>
+            <div class="flex items-center gap-4 z-10">
+                <div class="bg-slate-700/50 p-3 rounded-xl border border-slate-600">
+                    <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-slate-400 text-sm font-bold uppercase tracking-wider">Software Detected</h3>
+                    <div class="text-2xl font-bold text-white">{{ user_info.name }}</div>
+                </div>
+            </div>
 
-                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">References</h3>
-                <ul class="list-disc pl-5 space-y-2">
-                    <li><a href="#" class="text-fuchsia-400 hover:underline">https://example.com/security-advisory-1</a></li>
-                    <li><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ cve_id }}" target="_blank" rel="noopener noreferrer" class="text-fuchsia-400 hover:underline">https://cve.mitre.org/cgi-bin/cvename.cgi?name={{ cve_id }}</a></li>
-                </ul>
+            <div class="flex items-center gap-8 z-10">
+                <div class="text-center">
+                    <div class="text-slate-500 text-xs uppercase mb-1">Your Version</div>
+                    <div
+                        class="font-mono text-xl text-red-400 font-bold bg-red-900/20 px-4 py-2 rounded-lg border border-red-500/30">
+                        {{ user_info.version }}
+                    </div>
+                </div>
 
-                <h3 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-2 mt-8 mb-4">Mitigation Steps</h3>
-                <p>
-                    1. Upgrade to the latest version of the software.<br>
-                    2. Apply the official security patch.<br>
-                    3. Configure a firewall to block the affected port.
-                </p>
+                <div class="text-slate-600">
+                    <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                </div>
+
+                <div class="text-center">
+                    <div class="text-slate-500 text-xs uppercase mb-1">Vulnerable Range</div>
+                    <div
+                        class="font-mono text-xl text-amber-400 font-bold bg-amber-900/20 px-4 py-2 rounded-lg border border-amber-500/30">
+                        {% set ns = namespace(found=false) %}
+                        {% for soft in cve.affected_software %}
+                        {% if user_info.name|lower in soft.name|lower or soft.name|lower in user_info.name|lower %}
+                        {{ soft.range }}
+                        {% set ns.found = true %}
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if not ns.found %}
+                        See list below
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
+        {% endif %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <div class="lg:col-span-2 space-y-8">
+
+                <div class="glass-panel rounded-2xl p-8 relative overflow-hidden group">
+                    <div
+                        class="absolute -top-10 -right-10 w-32 h-32 bg-fuchsia-500 rounded-full blur-[80px] opacity-20 group-hover:opacity-30 transition">
+                    </div>
+
+                    <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span class="bg-gradient-to-r from-fuchsia-500 to-violet-500 text-transparent bg-clip-text">AI
+                            Suggested Mitigation</span>
+                        <span
+                            class="bg-fuchsia-500/10 text-fuchsia-300 text-[10px] px-2 py-0.5 rounded border border-fuchsia-500/20 tracking-wider">GENERATED
+                            BY GEMMA</span>
+                    </h2>
+
+                    {% if cve.mitigation_steps %}
+                    <ul class="space-y-4 relative z-10">
+                        {% for step in cve.mitigation_steps %}
+                        <li class="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition">
+                            <div
+                                class="bg-fuchsia-500/20 text-fuchsia-300 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5 border border-fuchsia-500/30">
+                                {{ loop.index }}
+                            </div>
+                            <p class="text-stone-200 leading-relaxed">{{ step }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div
+                        class="text-slate-400 italic p-4 border border-dashed border-slate-600 rounded-lg text-center bg-slate-800/30">
+                        AI analysis unavailable. Please refer to standard vendor documentation below.
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-slate-700/50">
+                    <h2 class="text-xl font-semibold text-violet-400 border-b border-slate-700/50 pb-3 mb-4">
+                        Technical Description
+                    </h2>
+                    <div class="prose prose-invert max-w-none text-slate-300 leading-relaxed">
+                        <p>{{ cve.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-slate-700/50">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Affected Versions</h3>
+                    {% if cve.affected_software %}
+                    <div class="flex flex-col gap-2">
+                        {% for soft in cve.affected_software %}
+                        <div
+                            class="bg-slate-900 text-slate-300 text-xs px-3 py-2 rounded border border-slate-700 flex justify-between items-center">
+                            <span class="font-medium text-slate-200">{{ soft.name }}</span>
+                            <span class="font-mono text-amber-500/80">{{ soft.range }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-slate-500 text-sm italic">No specific software configurations listed.</p>
+                    {% endif %}
+                </div>
+
+                <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-slate-700/50">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">References</h3>
+                    {% if cve.references %}
+                    <ul class="space-y-3">
+                        {% for ref in cve.references[:6] %}
+                        <li>
+                            <a href="{{ ref }}" target="_blank" rel="noopener noreferrer"
+                                class="flex items-start gap-2 text-xs text-fuchsia-400 hover:text-fuchsia-300 transition group break-all">
+                                <span class="mt-0.5 opacity-50">🔗</span>
+                                <span class="group-hover:underline">{{ ref }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-slate-500 text-sm italic">No references available.</p>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
     </main>
 </body>
+
 </html>

@@ -55,53 +55,67 @@ def process_file(cur, filepath):
 
     inserted = 0
     rows = []
+    
+    # 🔍 Verification Counters
+    count_exact = 0
+    count_ranges = 0
 
     vulns = data.get("vulnerabilities", [])
     for v in vulns:
         cve_object = v.get("cve", {})
-        if not cve_object:
-            continue # Skip kalau data aneh
+        if not cve_object: continue 
 
         cve_id = cve_object.get("id")
-        if not cve_id:
-            continue
+        if not cve_id: continue
 
         configs = cve_object.get("configurations", [])
 
         for config in configs: 
             for node in config.get("nodes", []):
+                # NOTE: Sometimes NVD puts cpeMatch inside 'children' for complex logic
+                # But for standard scanning, checking top-level cpeMatch is usually enough.
                 for m in node.get("cpeMatch", []):
                     
-                    # 'criteria' adalah key buat CPE URI di feed ini
                     cpe_uri = m.get("criteria") 
-                    if not cpe_uri:
-                        continue # Skip kalau gaada CPE URI
+                    if not cpe_uri: continue 
+
+                    v_start_inc = m.get("versionStartIncluding")
+                    v_start_exc = m.get("versionStartExcluding")
+                    v_end_inc = m.get("versionEndIncluding")
+                    v_end_exc = m.get("versionEndExcluding")
+
+                    # 🔍 Check if we found a range
+                    if any([v_start_inc, v_start_exc, v_end_inc, v_end_exc]):
+                        count_ranges += 1
+                    else:
+                        count_exact += 1
 
                     rows.append((
                         cve_id,
-                        cpe_uri, # <-- Pakai variabel yg udah dicek
-                        m.get("versionStartIncluding"),
-                        m.get("versionStartExcluding"),
-                        m.get("versionEndIncluding"),
-                        m.get("versionEndExcluding"),
+                        cpe_uri,
+                        v_start_inc,
+                        v_start_exc,
+                        v_end_inc,
+                        v_end_exc,
                         m.get("vulnerable", True),
                         json.dumps(m)
                     ))
                     
-                    # Logika batch-ing, udah bener!
                     if len(rows) >= BATCH_SIZE:
                         execute_batch(cur, INSERT_SQL, rows, page_size=BATCH_SIZE)
                         inserted += len(rows)
-                        print(f"   -> inserted {inserted} so far from {os.path.basename(filepath)}")
+                        print(f"   -> inserted {inserted}...")
                         rows = []
 
-    # Masukin sisa data yg belum ke-batch
     if rows:
         execute_batch(cur, INSERT_SQL, rows, page_size=BATCH_SIZE)
         inserted += len(rows)
 
+    # 📊 Print the stats for this file
+    print(f"   📊 Stats for {os.path.basename(filepath)}: Ranges Found: {count_ranges} | Exact Matches: {count_exact}")
+    
     return inserted
-
+    
 def inject_cpe_cve_data(folder: str = FOLDER):
     """Process all match chunk files and inject them into PostgreSQL."""
 

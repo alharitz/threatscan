@@ -15,6 +15,7 @@ if PROJECT_ROOT not in sys.path:
 
 # --- 2. Import Helper & API kita ---
 from utils.paths import RESULT_STORAGE_DIR  # noqa: E402
+from core.details import CveDetailProvider
 # Path helper kita!
 # Kita komen dulu import LLM-nya, sesuai permintaanmu
 # import app.api.llm_api as main_api
@@ -141,18 +142,18 @@ def result(scan_id):
 @app.route('/detail/<int:scan_id>')
 def detail(scan_id):
     item_name = request.args.get('item_name')
+
     if not item_name:
         abort(400, description="Item name must be provided as a query parameter.")
+    
     vuln_report_path = os.path.join(RESULT_STORAGE_DIR, 'vulnerability_report'+ '_' + str(scan_id) + '.json')
     
     try:
         with open(vuln_report_path, 'r', encoding='utf-8') as f:
             vuln_report = json.load(f)
     except FileNotFoundError:
-        abort(404, description=f"Report for scan ID '{scan_id}' not found.")
-    except json.JSONDecodeError:
-        abort(500, description="Failed to decode the report file.")
-
+        abort(404, description=f"Report not found.")
+    
     found_item = None
     for item in vuln_report:
         if item.get("name") == item_name:
@@ -160,7 +161,7 @@ def detail(scan_id):
             break
 
     if not found_item:
-        abort(404, description=f"Item '{item_name}' not found in scan ID '{scan_id}'.")
+        abort(404, description=f"Item '{item_name}' not found.")
 
     def get_severity_class(severity):
         severity = severity.upper() if severity else 'NONE'
@@ -180,10 +181,35 @@ def detail(scan_id):
 # --- 8. /cve/<cve_id>: Halaman Detail CVE ---
 @app.route('/cve/<cve_id>')
 def cve_detail(cve_id):
-    # For now, this is a mock. We'll fetch real data later.
-    # You would typically fetch the CVE data from your database
-    # or an external API using the cve_id.
-    return render_template('cve_detail.html', cve_id=cve_id)
+    """
+    Handles the 'More Info' page. 
+    Fetches DB data + AI Analysis server-side, then renders the HTML.
+    """
+    # 1. Capture Query Params
+    user_version = request.args.get('user_version') # e.g. "2.51.0"
+    item_name = request.args.get('item_name')       # e.g. "Git"
+
+    try:
+        # 1. Initialize the provider
+        provider = CveDetailProvider()
+        
+        # 2. Get the real data (This includes the AI generation!)
+        # Note: This might take 2-5 seconds depending on your Local LLM speed.
+        data = provider.get_full_details(cve_id)
+        
+        # 3. Check if data was found
+        if "error" in data:
+            return render_template('error.html', message=data['error']), 404
+            
+        # 4. Render the HTML template, passing the data as 'cve'
+        return render_template('cve_detail.html', cve=data, user_info={
+            "version": user_version,
+            "name": item_name
+        })
+        
+    except Exception as e:
+        app.logger.error(f"Error loading CVE page: {e}")
+        return f"Error processing request: {str(e)}", 500
 
 # --- 8. API buat LLM (Udah Siap, Tinggal Un-comment) ---
 @app.route('/api/mitigate/<cve_id>')

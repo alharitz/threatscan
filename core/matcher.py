@@ -97,6 +97,33 @@ class Matcher:
         end_incl = rule.get('v_end_inc')
         end_excl = rule.get('v_end_exc')
 
+        has_range = any([start_incl, start_excl, end_incl, end_excl])
+
+        if has_range:
+            try:
+                if start_incl and v_scanned < Version(start_incl): return False
+                if start_excl and v_scanned <= Version(start_excl): return False
+                if end_incl and v_scanned > Version(end_incl): return False
+                if end_excl and v_scanned >= Version(end_excl): return False
+                return True
+            except (InvalidVersion, TypeError):
+                return False
+
+        exact_version = rule.get('exact_version')
+
+        if exact_version == '*': 
+            return True
+            
+        if exact_version:
+            try:
+                # Compare as versions to handle 1.0 vs 1.0.0
+                return v_scanned == Version(exact_version)
+            except (InvalidVersion, TypeError):
+                # Fallback to string comparison
+                return clean_ver == exact_version
+                
+        return False
+
         try:
             # Logic: If a rule exists, we must satisfy it.
             if start_incl and v_scanned < Version(start_incl): return False
@@ -150,6 +177,7 @@ class Matcher:
                             m.version_start_excluding as v_start_exc,
                             m.version_end_including as v_end_inc,
                             m.version_end_excluding as v_end_exc,
+                            e.version as exact_version,  -- <--- NEW COLUMN
                             c.summary,
                             c.cvss_v3_base_score as severity,
                             c.base_severity as severity_level
@@ -157,8 +185,8 @@ class Matcher:
                         JOIN cve_cpe_entries m ON e.cpe23uri = m.cpe_uri
                         JOIN cve_entries c ON m.cve_id = c.cve_id
                         WHERE 
-                            (e.vendor = %s OR %s = '%%') -- Match vendor OR wildcard
-                            AND e.product ILIKE %s       -- Match product (fuzzy)
+                            (e.vendor = %s OR %s = '%%') 
+                            AND e.product ILIKE %s       
                     """
                     
                     cur.execute(query, (vendor_param, vendor_param, product_param))

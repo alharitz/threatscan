@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/logo.png') }}">
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom Scrollbar for WebKit Browsers */
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 */
+            background: #1e293b;
+            /* slate-800 */
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4a5568; /* slate-600 */
+            background: #4a5568;
+            /* slate-600 */
             border-radius: 4px;
         }
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #718096; /* slate-500 */
+            background: #718096;
+            /* slate-500 */
         }
     </style>
     <title>Vulnerability Details - ThreatScan</title>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
+
+<body
+    class="bg-gradient-to-br from-slate-900 via-slate-800 to-violet-900 max-w-[1920px] mx-auto text-stone-100 flex flex-col min-h-screen">
     <header class="my-8 mx-auto w-full max-w-7xl px-4 flex justify-between items-center">
         <a href="{{ url_for('home') }}" class="flex items-center space-x-2">
             <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="ThreatScan Logo" class="h-12">
         </a>
-        <a href="{{ url_for('result', scan_id=scan_id) }}" class="bg-fuchsia-500 px-5 py-2 rounded-full hover:bg-fuchsia-600 transition text-white font-semibold shadow-lg">
+        <a href="{{ url_for('result', scan_id=scan_id) }}"
+            class="bg-fuchsia-500 px-5 py-2 rounded-full hover:bg-fuchsia-600 transition text-white font-semibold shadow-lg">
             Back to Results
         </a>
     </header>
@@ -41,7 +51,8 @@
 
         <div class="bg-slate-800/50 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col h-[32rem]">
             <div class="p-6 border-b border-red-500/30">
-                <h2 class="text-2xl font-semibold text-red-400">Found {{ item.vulnerabilities|length }} Vulnerabilities</h2>
+                <h2 class="text-2xl font-semibold text-red-400">Found {{ item.vulnerabilities|length }} Vulnerabilities
+                </h2>
             </div>
             <div class="overflow-y-auto custom-scrollbar">
                 <table class="w-full text-left">
@@ -55,20 +66,22 @@
                     </thead>
                     <tbody>
                         {% for vuln in item.vulnerabilities %}
-                            <tr class="border-t border-slate-700/50 hover:bg-slate-700/50 transition-colors">
-                                <td class="p-4 font-medium text-fuchsia-400 w-1/6">{{ vuln.cve_id }}</td>
-                                <td class="p-4 text-center">
-                                    <span class="text-xs px-2 py-1 rounded-full font-semibold {{ get_severity_class(vuln.base_severity) }}">
-                                        {{ vuln.base_severity or 'N/A' }}
-                                    </span>
-                                </td>
-                                <td class="p-4 text-sm text-stone-300">{{ vuln.summary or 'No summary available.' }}</td>
-                                <td class="p-4 text-center w-1/6">
-                                    <a href="{{ url_for('cve_detail', cve_id=vuln.cve_id) }}" class="bg-violet-500 px-4 py-2 rounded-full hover:bg-violet-600 transition text-xs font-semibold shadow-md">
-                                        More Info
-                                    </a>
-                                </td>
-                            </tr>
+                        <tr class="border-t border-slate-700/50 hover:bg-slate-700/50 transition-colors">
+                            <td class="p-4 font-medium text-fuchsia-400 w-1/6">{{ vuln.cve_id }}</td>
+                            <td class="p-4 text-center">
+                                <span
+                                    class="text-xs px-2 py-1 rounded-full font-semibold {{ get_severity_class(vuln.base_severity) }}">
+                                    {{ vuln.base_severity or 'N/A' }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-sm text-stone-300">{{ vuln.summary or 'No summary available.' }}</td>
+                            <td class="p-4 text-center w-1/6">
+                                <a href="{{ url_for('cve_detail', cve_id=vuln.cve_id, user_version=item.version, item_name=item.name) }}"
+                                    class="bg-violet-500 px-4 py-2 rounded-full hover:bg-violet-600 transition text-xs font-semibold shadow-md">
+                                    More Info
+                                </a>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
@@ -76,4 +89,5 @@
         </div>
     </main>
 </body>
+
 </html>
