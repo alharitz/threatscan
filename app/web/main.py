@@ -188,10 +188,13 @@ def cve_detail(cve_id):
     # 1. Capture Query Params
     user_version = request.args.get('user_version') # e.g. "2.51.0"
     item_name = request.args.get('item_name')       # e.g. "Git"
+    item_type = request.args.get('item_type')
 
     try:
         # 1. Initialize the provider
         provider = CveDetailProvider()
+
+        target_part = 'a' if item_type == 'application' else None
         
         # 2. Get the real data (This includes the AI generation!)
         # Note: This might take 2-5 seconds depending on your Local LLM speed.

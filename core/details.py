@@ -45,14 +45,14 @@ class CveDetailProvider:
     def __init__(self, db_pool: psycopg2.pool.SimpleConnectionPool = None):
         self.db_pool = db_pool or get_db_connection()
 
-    def get_full_details(self, cve_id: str) -> Dict[str, Any]:
+    def get_full_details(self, cve_id: str, filter_part: str = None) -> Dict[str, Any]:
         """
         The Master Method: Called when user clicks 'Show Details'.
         """
         log.info(f"Fetching full details for {cve_id}...")
         
         # 1. Fetch Raw Data from DB
-        raw_data = self._fetch_db_data(cve_id)
+        raw_data = self._fetch_db_data(cve_id, filter_part)
         if not raw_data:
             return {"error": f"CVE {cve_id} not found in database"}
 
@@ -79,7 +79,7 @@ class CveDetailProvider:
             "references": raw_data['references']
         }
 
-    def _fetch_db_data(self, cve_id: str) -> Dict:
+    def _fetch_db_data(self, cve_id: str, filter_part: str = None) -> Dict:
         """Internal: Queries Postgres for facts."""
         conn = self.db_pool.getconn()
         try:
@@ -111,9 +111,15 @@ class CveDetailProvider:
                     FROM cve_cpe_entries m
                     JOIN cpe_entries e ON m.cpe_uri = e.cpe23uri
                     WHERE m.cve_id = %s
-                    LIMIT 20
                 """
-                cur.execute(query_soft, (cve_id,))
+                params = [cve_id]
+                if filter_part:
+                    query_soft += " AND e.part = %s"
+                    params.append(filter_part)
+
+                query_soft += " LIMIT 20"
+                
+                cur.execute(query_soft, tuple(params))
                 soft_rows = cur.fetchall()
                 
                 # Format the ranges nicely

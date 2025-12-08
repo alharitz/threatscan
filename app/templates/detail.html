@@ -76,7 +76,7 @@
                             </td>
                             <td class="p-4 text-sm text-stone-300">{{ vuln.summary or 'No summary available.' }}</td>
                             <td class="p-4 text-center w-1/6">
-                                <a href="{{ url_for('cve_detail', cve_id=vuln.cve_id, user_version=item.version, item_name=item.name) }}"
+                                <a href="{{ url_for('cve_detail', cve_id=vuln.cve_id, user_version=item.version, item_name=item.name, item_type=item.type) }}"
                                     class="bg-violet-500 px-4 py-2 rounded-full hover:bg-violet-600 transition text-xs font-semibold shadow-md">
                                     More Info
                                 </a>
