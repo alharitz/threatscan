@@ -106,10 +106,11 @@ class Matcher:
             return False
 
         # Extract rules from the DB row (keys match aliases in SQL query)
-        start_incl = rule.get('v_start_inc')
-        start_excl = rule.get('v_start_exc')
-        end_incl = rule.get('v_end_inc')
-        end_excl = rule.get('v_end_exc')
+        start_incl = self._s(rule.get('v_start_inc'))
+        start_excl = self._s(rule.get('v_start_exc'))
+        end_incl   = self._s(rule.get('v_end_inc'))
+        end_excl   = self._s(rule.get('v_end_exc'))
+        exact_version = self._s(rule.get('exact_version'))
 
         has_range = any([start_incl, start_excl, end_incl, end_excl])
 
@@ -122,8 +123,6 @@ class Matcher:
                 return True
             except (InvalidVersion, TypeError):
                 return False
-
-        exact_version = rule.get('exact_version')
 
         if exact_version == '*': 
             return True
@@ -174,11 +173,11 @@ class Matcher:
                     query = """
                         SELECT 
                             m.cve_id,
-                            m.version_start_including as v_start_inc,
-                            m.version_start_excluding as v_start_exc,
-                            m.version_end_including as v_end_inc,
-                            m.version_end_excluding as v_end_exc,
-                            e.version as exact_version,
+                            m.version_start_including::text as v_start_inc,
+                            m.version_start_excluding::text as v_start_exc,
+                            m.version_end_including::text as v_end_inc,
+                            m.version_end_excluding::text as v_end_exc,
+                            e.version::text as exact_version,
                             c.summary,
                             c.cvss_v3_base_score as severity,
                             c.base_severity as severity_level
@@ -195,6 +194,8 @@ class Matcher:
 
                     # --- Step C: Python Version Filtering ---
                     if potential_cves:
+                        if item['normalized_name'] == 'winrar':
+                            log.info(f"scanned={item['normalized_version']} end_excl={cve_row['v_end_exc']} type={type(cve_row['v_end_exc'])}")
                         for idx in indices:
                             item = software_list[idx]
                             
