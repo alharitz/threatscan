@@ -93,6 +93,9 @@ class Matcher:
 
         return s
 
+    def _s(self, x):
+        return str(x) if x is not None else None
+
     def _is_version_vulnerable(self, scanned_ver_str: str, rule: Dict) -> bool:
         """
         Compares scanned version against the CVE range rules.
