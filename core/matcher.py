@@ -176,6 +176,8 @@ class Matcher:
                     query = """
                         SELECT 
                             m.cve_id,
+                            m.cpe_uri as m_cpe_uri,
+                            e.cpe23uri as e_cpe23uri,
                             m.version_start_including::text as v_start_inc,
                             m.version_start_excluding::text as v_start_exc,
                             m.version_end_including::text as v_end_inc,
@@ -198,7 +200,7 @@ class Matcher:
                     # --- Step C: Python Version Filtering ---
                     if potential_cves:
                         if item['normalized_name'] == 'winrar':
-                            log.info(f"scanned={item['normalized_version']} end_excl={cve_row['v_end_exc']} type={type(cve_row['v_end_exc'])}")
+                            log.info(f"row cve={cve_row['cve_id']} m_cpe={cve_row['m_cpe_uri']} e_cpe={cve_row['e_cpe23uri']} end_excl={cve_row['v_end_exc']} exact={cve_row['exact_version']}")
                         for idx in indices:
                             item = software_list[idx]
                             
