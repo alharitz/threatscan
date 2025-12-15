@@ -60,6 +60,9 @@ class Matcher:
         clean = re.sub(r'[\(\[\{].*[\)\]\}]', '', raw_name).strip().lower()
         clean = re.sub(r'[^a-z0-9_ ]', '', clean)
         clean = clean.replace(' ', '_').replace('-', '_').strip('_')
+
+        if not clean:
+            return "%", "%"
         
         parts = clean.split('_')
         
@@ -70,14 +73,25 @@ class Matcher:
             if candidate in self.known_vendors:
                 vendor = candidate
                 product = "_".join(parts[i:])
-                # Ensure product isn't empty (e.g. if raw_name was just "Microsoft")
-                if not product: product = "%"
-                else: product = product + "%" # Add wildcard for fuzzy match
+               
+                if not product:
+                    product = "%"
+                else:
+                    product = "%" + product + "%"
                 return vendor, product
 
         # 3. Fallback: If no vendor found, assume the whole string is the product
         # and we will search ALL vendors.
-        return "%", clean + "%"
+        return "%", "%" + clean + "%"
+
+    def _normalize_version(self, s: str) -> str:
+        if not s: return ""
+
+        s = s.strip().lower().lstrip("v")
+        s = re.sub(r'^(\d+(?:\.\d+)*)([a-z]+)$', r'\1.\2', s)
+        s = re.sub(r'[^0-9a-z\.\-\+]', '', s)
+
+        return s
 
     def _is_version_vulnerable(self, scanned_ver_str: str, rule: Dict) -> bool:
         """
@@ -85,7 +99,7 @@ class Matcher:
         """
         try:
             # Clean up version string (e.g., remove 'v' prefix if present)
-            clean_ver = scanned_ver_str.lstrip('v')
+            clean_ver = self._normalize_version(scanned_ver_str)
             v_scanned = Version(clean_ver)
         except (InvalidVersion, TypeError):
             # If version is garbage (e.g. "Unknown"), we can't mathematically compare it.
@@ -123,19 +137,6 @@ class Matcher:
                 return clean_ver == exact_version
                 
         return False
-
-        try:
-            # Logic: If a rule exists, we must satisfy it.
-            if start_incl and v_scanned < Version(start_incl): return False
-            if start_excl and v_scanned <= Version(start_excl): return False
-            if end_incl and v_scanned > Version(end_incl): return False
-            if end_excl and v_scanned >= Version(end_excl): return False
-            
-            # If we survived all checks, it's a match!
-            return True
-        except (InvalidVersion, TypeError):
-            # If the database contains bad version data, skip this rule safely
-            return False
 
     def find_vulnerabilities(self, software_list: List[Dict]) -> List[Dict]:
         """
@@ -177,7 +178,7 @@ class Matcher:
                             m.version_start_excluding as v_start_exc,
                             m.version_end_including as v_end_inc,
                             m.version_end_excluding as v_end_exc,
-                            e.version as exact_version,  -- <--- NEW COLUMN
+                            e.version as exact_version,
                             c.summary,
                             c.cvss_v3_base_score as severity,
                             c.base_severity as severity_level
@@ -185,8 +186,8 @@ class Matcher:
                         JOIN cve_cpe_entries m ON e.cpe23uri = m.cpe_uri
                         JOIN cve_entries c ON m.cve_id = c.cve_id
                         WHERE 
-                            (e.vendor = %s OR %s = '%%') 
-                            AND e.product ILIKE %s       
+                            (%s = '%%' OR e.vendor = %s)
+                            AND e.product ILIKE %s
                     """
                     
                     cur.execute(query, (vendor_param, vendor_param, product_param))
