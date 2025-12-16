@@ -177,18 +177,15 @@ class Matcher:
                     query = """
                         SELECT 
                             m.cve_id,
-                            m.cpe_uri, 
-                            m.version_start_including as v_start_inc,
-                            m.version_start_excluding as v_start_exc,
-                            m.version_end_including as v_end_inc,
-                            m.version_end_excluding as v_end_exc,
-                            -- We don't have exact_version in 'm' usually, so we assume ranges.
-                            -- If you need exact matching, it's usually embedded in the cpe_uri itself
-                            -- but for NVD, ranges are the gold standard.
-                            NULL as exact_version,
+                            m.cpe_uri,
+                            m.version_start_including::text as v_start_inc,
+                            m.version_start_excluding::text as v_start_exc,
+                            m.version_end_including::text as v_end_inc,
+                            m.version_end_excluding::text as v_end_exc,
+                            NULL as exact_version, 
                             c.summary,
-                            c.cvss_v3_score as severity,  -- MATCHED YOUR SCHEMA
-                            c.severity as severity_level  -- MATCHED YOUR SCHEMA
+                            c.cvss_v3_base_score as severity,
+                            c.base_severity as severity_level
                         FROM cve_cpe_entries m
                         JOIN cve_entries c ON m.cve_id = c.cve_id
                         WHERE 
@@ -207,9 +204,8 @@ class Matcher:
                             if 'vulnerabilities' not in item:
                                 item['vulnerabilities'] = []
                             
-                            # Check version matches
                             for cve_row in potential_cves:
-                                # We pass the row directly; helper function uses v_start_inc etc.
+                                # Compare versions
                                 if self._is_version_vulnerable(item['normalized_version'], cve_row):
                                     
                                     # Deduplication
@@ -217,7 +213,8 @@ class Matcher:
                                         item['vulnerabilities'].append({
                                             "cve_id": cve_row['cve_id'],
                                             "summary": cve_row['summary'],
-                                            "score": float(cve_row['severity']) if cve_row['severity'] else 0.0,
+                                            # Handle None values for score just in case
+                                            "score": float(cve_row['severity']) if cve_row['severity'] is not None else 0.0,
                                             "base_severity": cve_row['severity_level'],
                                             "status": "Analyzed"
                                         })
