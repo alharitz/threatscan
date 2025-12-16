@@ -58,8 +58,8 @@ class Matcher:
 
         # 1. Clean String: Lowercase, remove brackets, keep only alphanumeric + _
         clean = re.sub(r'[\(\[\{].*[\)\]\}]', '', raw_name).strip().lower()
-        clean = re.sub(r'[^a-z0-9_ ]', '', clean)
-        clean = clean.replace(' ', '_').replace('-', '_').strip('_')
+        clean = re.sub(r'[^a-z0-9_\-\. ]', '', clean) 
+        clean = clean.replace(' ', '_').strip('_')
 
         if not clean:
             return "%", "%"
@@ -152,9 +152,6 @@ class Matcher:
 
         log.info(f"⚡ Analyzing {len(software_list)} items against Local Database...")
 
-        # --- Step A: Grouping ---
-        # We group items so if you have 10 versions of "Java", we only query the DB once for "Java".
-        # Map: (vendor_guess, product_guess) -> List of indices in software_list
         grouped_items = {} 
         for idx, item in enumerate(software_list):
             v_guess, p_guess = self._extract_metadata(item['normalized_name'])
@@ -170,47 +167,52 @@ class Matcher:
                 
                 # --- Step B: Batch Querying ---
                 for (vendor_param, product_param), indices in grouped_items.items():
+                    if vendor_param != '%':
+                        search_pattern = f"%:{vendor_param}:{product_param}:%"
+                    else:
+                        search_pattern = f"%:{product_param}:%"
                     
                     # 1. The MASTER Query
                     # Matches the columns from your uploaded images exactly.
                     query = """
                         SELECT 
                             m.cve_id,
-                            m.cpe_uri as m_cpe_uri,
-                            e.cpe23uri as e_cpe23uri,
-                            m.version_start_including::text as v_start_inc,
-                            m.version_start_excluding::text as v_start_exc,
-                            m.version_end_including::text as v_end_inc,
-                            m.version_end_excluding::text as v_end_exc,
-                            e.version::text as exact_version,
+                            m.cpe_uri, 
+                            m.version_start_including as v_start_inc,
+                            m.version_start_excluding as v_start_exc,
+                            m.version_end_including as v_end_inc,
+                            m.version_end_excluding as v_end_exc,
+                            -- We don't have exact_version in 'm' usually, so we assume ranges.
+                            -- If you need exact matching, it's usually embedded in the cpe_uri itself
+                            -- but for NVD, ranges are the gold standard.
+                            NULL as exact_version,
                             c.summary,
-                            c.cvss_v3_base_score as severity,
-                            c.base_severity as severity_level
-                        FROM cpe_entries e
-                        JOIN cve_cpe_entries m ON e.cpe23uri = m.cpe_uri
+                            c.cvss_v3_score as severity,  -- MATCHED YOUR SCHEMA
+                            c.severity as severity_level  -- MATCHED YOUR SCHEMA
+                        FROM cve_cpe_entries m
                         JOIN cve_entries c ON m.cve_id = c.cve_id
                         WHERE 
-                            (%s = '%%' OR e.vendor = %s)
-                            AND e.product ILIKE %s
+                            m.vulnerable = true
+                            AND m.cpe_uri ILIKE %s
                     """
                     
-                    cur.execute(query, (vendor_param, vendor_param, product_param))
+                    cur.execute(query, (search_pattern,))
                     potential_cves = cur.fetchall()
 
                     # --- Step C: Python Version Filtering ---
                     if potential_cves:
-                        if item['normalized_name'] == 'winrar':
-                            log.info(f"row cve={cve_row['cve_id']} m_cpe={cve_row['m_cpe_uri']} e_cpe={cve_row['e_cpe23uri']} end_excl={cve_row['v_end_exc']} exact={cve_row['exact_version']}")
                         for idx in indices:
                             item = software_list[idx]
                             
                             if 'vulnerabilities' not in item:
                                 item['vulnerabilities'] = []
                             
-                            # Check every potential CVE against this specific item's version
+                            # Check version matches
                             for cve_row in potential_cves:
+                                # We pass the row directly; helper function uses v_start_inc etc.
                                 if self._is_version_vulnerable(item['normalized_version'], cve_row):
-                                    # Deduplication check
+                                    
+                                    # Deduplication
                                     if not any(v['cve_id'] == cve_row['cve_id'] for v in item['vulnerabilities']):
                                         item['vulnerabilities'].append({
                                             "cve_id": cve_row['cve_id'],
