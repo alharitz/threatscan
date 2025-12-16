@@ -167,10 +167,13 @@ class Matcher:
                 
                 # --- Step B: Batch Querying ---
                 for (vendor_param, product_param), indices in grouped_items.items():
-                    if vendor_param != '%':
-                        search_pattern = f"%:{vendor_param}:{product_param}:%"
+                    raw_vendor = vendor_param.replace('%', '')
+                    raw_product = product_param.replace('%', '')
+
+                    if raw_vendor:
+                        regex_pattern = f"cpe:2\\.3:[aoh]:{re.escape(raw_vendor)}:{re.escape(raw_product)}:"
                     else:
-                        search_pattern = f"%:{product_param}:%"
+                        regex_pattern = f"cpe:2\\.3:[aoh]:[^:]+:{re.escape(raw_product)}:"
                     
                     # 1. The MASTER Query
                     # Matches the columns from your uploaded images exactly.
@@ -193,7 +196,7 @@ class Matcher:
                             AND m.cpe_uri ILIKE %s
                     """
                     
-                    cur.execute(query, (search_pattern,))
+                    cur.execute(query, (regex_pattern,))
                     potential_cves = cur.fetchall()
 
                     # --- Step C: Python Version Filtering ---
