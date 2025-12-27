@@ -40,13 +40,25 @@ class NodeCollector(BaseCollector):
                 "type": "language_runtime"
             })
 
-            output = subprocess.check_output(
+            process = subprocess.run(
                 [pm, "ls", "-g", "--json", "--depth=0"],
                 text=True,
-                stderr=subprocess.STDOUT
-            ).strip()
+                capture_output=True, # Captures both stdout and stderr
+                check=False           # <--- CRITICAL FIX: Ignores exit code
+            )
 
-            json_output = json.loads(output)
+            output = (process.stdout or "").strip()
+
+            if not output:
+                log.warning("NPM returned no output.")
+                return results
+            
+            try:
+                json_output = json.loads(output)
+            except json.JSONDecodeError:
+                log.error(f"Failed to parse NPM JSON output. Stderr: {process.stderr}")
+                return results
+
             packages = javascript_parser.nodeParser(json_output.get("dependencies", {}), log)
 
             for pkg in packages:
